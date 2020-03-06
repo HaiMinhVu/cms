@@ -3,12 +3,6 @@ include('../../../newconnect.php');
 include('../header.php');
 include('manage_function.php');
 
-// use Aws\Credentials\CredentialProvider as CP;
-// use App\Services\AWS;
-
-
-// exit();
-
 ?>
 
 <div class="content mt-3"> <!-- begining of display content -->
