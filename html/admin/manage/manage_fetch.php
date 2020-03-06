@@ -90,6 +90,8 @@ if(isset($_POST) && $_POST['site_action'] == 'fetch_site'){
     $statement = $cms_connect->query($query);
     $data = array();
     $filtered_rows = mysqli_num_rows($statement);
+    print_r($filtered_rows);
+    exit();
     while($row = $statement->fetch_assoc()){
         $sub_array = array();
         $sub_array['name'] = utf8_encode($row['label']);

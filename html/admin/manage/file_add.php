@@ -3,6 +3,11 @@ include('../../../newconnect.php');
 include('../header.php');
 include('manage_function.php');
 
+// use Aws\Credentials\CredentialProvider as CP;
+// use App\Services\AWS;
+
+
+// exit();
 
 ?>
 
@@ -157,10 +162,18 @@ $(document).ready(function(){
             contentType: false,
             cache: false,
             processData:false,
-            success: function(mess){
+            success: function(mess, m2, m3){
                 $("#loader").hide();
-                localStorage.setItem("file_result", mess);
-                window.location.reload();
+                console.log(mess);
+                console.log(m2);
+                console.log(m3);
+                // localStorage.setItem("file_result", mess);
+                // window.location.reload();
+            },
+            error: function(x1,x2,x3) {
+                console.log(x1);
+                console.log(x2);
+                console.log(x3);
             }
         });
     });

@@ -2,6 +2,7 @@
 include('../../../newconnect.php');
 include('manage_function.php');
 
+use App\Services\AWS;
 
 /*********************************************************************************/
 /********************************* NS CATEGORY ***********************************/
@@ -193,6 +194,8 @@ if($_POST['file_action'] == 'add_file'){
 
 	$display_nameArr = $_POST['display_name'];
 	$filesArr = $_POST['files_upload'];
+
+	// echo  json_encode($_POST);
 	
 
 	if($site_id === '4'){
@@ -235,48 +238,55 @@ if($_POST['file_action'] == 'add_file'){
 
 			$target_file = $sitepath.$folder.$file_name;
 			$filecontent = $tmpfile->data;
-			if(file_put_contents($target_file,base64_decode($filecontent))){
+			$filedata = base64_decode($filecontent);
 
-				$insertsql = "INSERT INTO file_manager(file_type_id, file_name, display_name, site_folder_id, site_id, uid_created, uid_modified)
-							VALUES (?,?,?,?,?,?,?)";
-				$stmt = $cms_connect->prepare($insertsql);
-				$stmt->bind_param("issiiii", $file_type_id, $file_name, $display_name, $site_folder_id, $site_id, $user_id, $user_id);
-				if($stmt->execute()){
-					$uploaded++;
-					$result = "files uploaded.";
-				}
-				else{
-					$result = "files failed to upload.";
+				try {
+					$insertsql = "INSERT INTO file_manager(file_type_id, file_name, description, site_folder_id, site_id, uid_created, uid_modified)
+								VALUES (?,?,?,?,?,?,?)";
+					$stmt = $cms_connect->prepare($insertsql);
+					$stmt->bind_param("issiiii", $file_type_id, $file_name, $display_name, $site_folder_id, $site_id, $user_id, $user_id);
+					if($stmt->execute()){
+						$uploaded++;
+						$result = "files uploaded.";
+
+						AWS::uploadToS3("test/{$folder}{$file_name}", $filedata);
+					}
+					else{
+						$result = "files failed to upload.";
+					}
+
+					// copy file to sightmark.com if it is sightmark
+					// if($site_id === '4'){
+					// 	$local_file = $target_file;
+					// 	$remote_file = "public_html/SM/".$folder.$file_name;
+					// 	$ftp_server = 'sightmark-ds.com'; 
+					// 	$ftp_user_name = 'sightma1@sightmark-ds.com';
+					// 	$ftp_user_pass = 'bvhfur84BVHFUR*$';
+					// 	$conn_id = ftp_connect($ftp_server);
+					// 	$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+					// 	ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
+					// 	ftp_close($conn_id);
+					// }
+					// else if($site_id === '21'){
+					// 	$local_file = $target_file;
+					// 	$remote_file = "public_html/".$folder.$file_name;
+					// 	$ftp_server = 'ftp.kjrests.com'; 
+					// 	$ftp_user_name = 'cms@kjrests.com';
+					// 	$ftp_user_pass = 'bvhfur84BVHFUR*$';
+					// 	$conn_id = ftp_connect($ftp_server);
+					// 	$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+					// 	ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
+					// 	ftp_close($conn_id);
+					// }
+				} catch(\Exception $e) {
+					print_r($e->getMessage());
+					exit();
 				}
 
-				// copy file to sightmark.com if it is sightmark
-				if($site_id === '4'){
-					$local_file = $target_file;
-					$remote_file = "public_html/SM/".$folder.$file_name;
-					$ftp_server = 'sightmark-ds.com'; 
-					$ftp_user_name = 'sightma1@sightmark-ds.com';
-					$ftp_user_pass = 'bvhfur84BVHFUR*$';
-					$conn_id = ftp_connect($ftp_server);
-					$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-					ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
-					ftp_close($conn_id);
-				}
-				else if($site_id === '21'){
-					$local_file = $target_file;
-					$remote_file = "public_html/".$folder.$file_name;
-					$ftp_server = 'ftp.kjrests.com'; 
-					$ftp_user_name = 'cms@kjrests.com';
-					$ftp_user_pass = 'bvhfur84BVHFUR*$';
-					$conn_id = ftp_connect($ftp_server);
-					$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-					ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
-					ftp_close($conn_id);
-				}
-
-			}
-			else{
-				$result = "files failed to upload.";
-			}
+			// }
+			// else{
+			// 	$result = "files failed to upload.";
+			// }
 		}
 		$message = $uploaded.' '. $result;
 	}
