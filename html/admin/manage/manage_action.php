@@ -193,7 +193,7 @@ if($_POST['file_action'] == 'add_file'){
 	$site_id = $_POST['site'];
 	$user_id = $_SESSION['uid'];
 	$brand_name = $_POST['selected_brand'];
-	$brand_slug = S::create($brand_name)->slugify('_');
+	$brand_slug = S::create($brand_name)->slugify('-');
 
 	$display_nameArr = $_POST['display_name'];
 	$filesArr = $_POST['files_upload'];	
