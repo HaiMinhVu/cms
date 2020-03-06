@@ -14,15 +14,15 @@ function manufacture_select_option($cms_connect){
 
 function treeview_category_array($cms_connect){	
 	$output = array();
-	// $sql = "SELECT id, label, parent FROM list_product_category WHERE active = 1";
-	// $result = $cms_connect->query($sql);
-	// while($row = $result->fetch_assoc()){
-	// 	$tmp = array();
-	// 	$tmp['id'] = $row['id'];
-	// 	$tmp['parent'] = $row['parent'] == 0 ? '#' : $row['parent'];
-	// 	$tmp['text'] = $row['label'];
-	// 	$output[] = $tmp;
-	// }
+	$sql = "SELECT id, label, parent FROM list_product_category WHERE active = 1";
+	$result = $cms_connect->query($sql);
+	while($row = $result->fetch_assoc()){
+		$tmp = array();
+		$tmp['id'] = $row['id'];
+		$tmp['parent'] = $row['parent'] == 0 ? '#' : $row['parent'];
+		$tmp['text'] = $row['label'];
+		$output[] = $tmp;
+	}
 	return $output;
 }
 

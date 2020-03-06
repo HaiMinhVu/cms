@@ -3,6 +3,7 @@ include('../../../newconnect.php');
 include('manage_function.php');
 
 use App\Services\AWS;
+use Stringy\Stringy as S;
 
 /*********************************************************************************/
 /********************************* NS CATEGORY ***********************************/
@@ -191,39 +192,14 @@ if($_POST['file_action'] == 'add_file'){
 	$site_folder_id = $_POST['folder'];
 	$site_id = $_POST['site'];
 	$user_id = $_SESSION['uid'];
+	$brand_name = $_POST['selected_brand'];
+	$brand_slug = S::create($brand_name)->slugify('_');
 
 	$display_nameArr = $_POST['display_name'];
-	$filesArr = $_POST['files_upload'];
-
-	// echo  json_encode($_POST);
-	
-
-	if($site_id === '4'){
-		$sitepath = '/home/sellmar1/public_html/SM/';
-	}
-	elseif($site_id === '7'){
-		$sitepath = '/home/sellmar1/public_html/FF/';
-	}
-	elseif($site_id === '10'){
-		$sitepath = '/home/sellmark/public_html/PL/';
-	}
-	elseif($site_id === '11'){
-		$sitepath = '/home/sellmar1/public_html/SC/';
-	}
-	elseif($site_id === '12'){
-		$sitepath = '/home/sellmar1/public_html/TS/';
-	}
-	elseif($site_id === '17'){
-		$sitepath = '/home/sellmar1/public_html/eternal/';
-	}
-	elseif($site_id === '21'){
-		$sitepath = '/home/sellmar1/public_html/KJ/';
-	}
-	else{
-		$sitepath = '/home/sellmar1/public_html/sellmark/';
-	}
+	$filesArr = $_POST['files_upload'];	
 		
 	$folder = folder_name_by_id($cms_connect, $site_folder_id);
+	$folder = S::create($folder)->ensureRight('/');
 
 	$uploaded = 0;
 	if(count($filesArr) == 0){
@@ -236,57 +212,23 @@ if($_POST['file_action'] == 'add_file'){
 			$file_name = $tmpfile->name;
 			$display_name = $display_nameArr[$i];
 
-			$target_file = $sitepath.$folder.$file_name;
 			$filecontent = $tmpfile->data;
 			$filedata = base64_decode($filecontent);
+			$filekey = "{$brand_slug}/{$folder}{$file_name}";
 
-				try {
-					$insertsql = "INSERT INTO file_manager(file_type_id, file_name, description, site_folder_id, site_id, uid_created, uid_modified)
-								VALUES (?,?,?,?,?,?,?)";
-					$stmt = $cms_connect->prepare($insertsql);
-					$stmt->bind_param("issiiii", $file_type_id, $file_name, $display_name, $site_folder_id, $site_id, $user_id, $user_id);
-					if($stmt->execute()){
-						$uploaded++;
-						$result = "files uploaded.";
-
-						AWS::uploadToS3("test/{$folder}{$file_name}", $filedata);
-					}
-					else{
-						$result = "files failed to upload.";
-					}
-
-					// copy file to sightmark.com if it is sightmark
-					// if($site_id === '4'){
-					// 	$local_file = $target_file;
-					// 	$remote_file = "public_html/SM/".$folder.$file_name;
-					// 	$ftp_server = 'sightmark-ds.com'; 
-					// 	$ftp_user_name = 'sightma1@sightmark-ds.com';
-					// 	$ftp_user_pass = 'bvhfur84BVHFUR*$';
-					// 	$conn_id = ftp_connect($ftp_server);
-					// 	$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-					// 	ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
-					// 	ftp_close($conn_id);
-					// }
-					// else if($site_id === '21'){
-					// 	$local_file = $target_file;
-					// 	$remote_file = "public_html/".$folder.$file_name;
-					// 	$ftp_server = 'ftp.kjrests.com'; 
-					// 	$ftp_user_name = 'cms@kjrests.com';
-					// 	$ftp_user_pass = 'bvhfur84BVHFUR*$';
-					// 	$conn_id = ftp_connect($ftp_server);
-					// 	$login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-					// 	ftp_put($conn_id, $remote_file, $local_file, FTP_BINARY);
-					// 	ftp_close($conn_id);
-					// }
-				} catch(\Exception $e) {
-					print_r($e->getMessage());
-					exit();
-				}
-
-			// }
-			// else{
-			// 	$result = "files failed to upload.";
-			// }
+			try {
+				AWS::uploadToS3($filekey, $filedata);
+				$insertsql = "INSERT INTO file_manager(file_type_id, file_name, description, site_folder_id, site_id, uid_created, uid_modified)
+							VALUES (?,?,?,?,?,?,?)";
+				$stmt = $cms_connect->prepare($insertsql);
+				$stmt->bind_param("issiiii", $file_type_id, $file_name, $display_name, $site_folder_id, $site_id, $user_id, $user_id);
+				$stmt->execute();
+				$uploaded++;
+				$result = "files uploaded.";
+			} catch(\Exception $e) {
+				// print_r($e->getMessage());
+				$result = "files failed to upload.";
+			}
 		}
 		$message = $uploaded.' '. $result;
 	}

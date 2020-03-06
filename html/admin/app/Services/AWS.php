@@ -14,7 +14,6 @@ class AWS {
 	public function __construct()
 	{
 		$this->S3Client = new S3Client([
-			// 'profile' => 'default',
             'region' => getenv('AWS_REGION'),
             'version' => 'latest'
 		]);
@@ -24,6 +23,10 @@ class AWS {
     public static function uploadToS3($key, $source)
     {
     	$instance = self::getInstance();
+
+    	if($instance->doesFileExistInS3($key)) {
+    		throw new \Exception("File exists in S3", 1);
+    	}
 
         $uploader = new ObjectUploader(
             $instance->S3Client,

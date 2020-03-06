@@ -63,7 +63,7 @@ include('manage_function.php');
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <select name='site' class="selectpicker form-control show-tick" data-live-search="true" data-style="btn-primary" required>
+                                <select name='site' id="brand-select" class="selectpicker form-control show-tick" data-live-search="true" data-style="btn-primary" required>
                                     <option value=''>--- Select Brand ---</option>
                                     <?php echo site_list_select_option($cms_connect)?>
                                 </select>
@@ -155,6 +155,7 @@ $(document).ready(function(){
         event.preventDefault();
         var data = new FormData(this);
         data.append("file_action", "add_file");
+        data.append("selected_brand", $("#brand-select option:selected").text());
         $.ajax({
             type:"post",
             url:"manage_action.php",
@@ -162,18 +163,10 @@ $(document).ready(function(){
             contentType: false,
             cache: false,
             processData:false,
-            success: function(mess, m2, m3){
+            success: function(mess){
                 $("#loader").hide();
-                console.log(mess);
-                console.log(m2);
-                console.log(m3);
-                // localStorage.setItem("file_result", mess);
-                // window.location.reload();
-            },
-            error: function(x1,x2,x3) {
-                console.log(x1);
-                console.log(x2);
-                console.log(x3);
+                localStorage.setItem("file_result", mess);
+                window.location.reload();
             }
         });
     });
