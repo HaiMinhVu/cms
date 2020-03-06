@@ -1,0 +1,15 @@
+{
+    "name": "sellmark/cms",
+    "description": "Legacy Sellmark CMS",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sellmark Corporation",
+            "email": "info@sellmark.net"
+        }
+    ],
+    "require": {
+        "aws/aws-sdk-php": "^3.133"
+    }
+}
