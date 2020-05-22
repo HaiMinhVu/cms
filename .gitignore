@@ -1,0 +1,4 @@
+html/admin/node_modules
+html/admin/vendor
+html/admin/.*
+.env

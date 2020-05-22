@@ -1,6 +1,15 @@
 <?php
 
-$root = 'https://'.$_SERVER['HTTP_HOST'];
+if (isset($_SERVER['HTTPS']) &&
+    ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+    isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+  $protocol = 'https://';
+} else {
+  $protocol = 'http://';
+}
+
+$root = $protocol.$_SERVER['HTTP_HOST'];
 if(!isset($_SESSION['user'])){
 	header("Location:".$root."/login.php");
 }
@@ -17,6 +26,7 @@ if(!isset($_SESSION['user'])){
 
 	<!-- All CSS -->
 		<!-- general -->
+		<link rel="stylesheet" href="<?php echo $root?>/assets/dist/main.css">
 	    <link rel="stylesheet" href="<?php echo $root?>/assets/css/bootstrap.min.css">
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" href="<?php echo $root?>/assets/css/jquery-ui.css">

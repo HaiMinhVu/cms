@@ -49,7 +49,9 @@ $category_tree = json_encode(treeview_category_array($cms_connect));
                     </ul><!------------ end of header tab ------------>
 
 	                <!------------ begin of content ------------>
-                    <h1>Coming soon ...</h1>
+                    <div id="app">
+                        <featured-products-editor />
+                    </div>
             </div>
         </div>
     </div>
