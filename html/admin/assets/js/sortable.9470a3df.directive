@@ -1,0 +1,13 @@
+import {DirectiveOptions} from 'vue';
+import {Vue} from "vue-property-decorator";
+import { Sortable } from '@shopify/draggable';
+
+const sortableDirective = DirectiveOptions => {
+   inserted: (el, node, vNode) => {
+      new Sortable(el, node.value);
+   }
+};
+
+Vue.directive('sortable', sortableDirective);
+
+export default sortableDirective;
