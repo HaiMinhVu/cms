@@ -3,7 +3,7 @@
 		<BFormInput v-model="query" placeholder="Filter by name or sku"></BFormInput>
 		<div class="overflow-auto" style="height:50vh">
 			<BListGroup v-if="!loading">
-				<BListGroupItem button v-for="product in productList" :key="product.id" @click="selectProduct(product)">
+				<BListGroupItem button :disabled="isProductSelected(product.sku)" v-for="product in productList" :key="product.id" @click="selectProduct(product)">
 					<ProductMediaItem :product="product" />
 				</BListGroupItem>
 			</BListGroup>
@@ -32,6 +32,11 @@
 	import ProductMediaItem from './MediaItem';
 
 	export default {
+		props: {
+			selectedProducts: {
+				type: Array
+			}
+		},
 		data() {
 			return {
 				httpClient: null,
@@ -41,7 +46,7 @@
 			}
 		},
 		created() {
-			this.$set(this, 'httpClient', new httpClient('http://localhost:8888/v1/crud'));
+			this.$set(this, 'httpClient', new httpClient);
 		},
 		mounted() {
 			this.getData();
@@ -51,6 +56,9 @@
 				const { data } = await this.httpClient.get('product/list');
 				this.$set(this, 'products', data);
 				this.$set(this, 'loading', false); 
+			},
+			isProductSelected(sku) {
+				return this.selectedProducts.includes(sku);
 			},
 			selectProduct(product) {
 				this.$emit('productSelected', product);
@@ -78,7 +86,7 @@
 		},
 		components: {
 			BRow,
-		BCol,
+			BCol,
 			BIcon,
 			BFormInput,
 			BImgLazy,
@@ -93,3 +101,11 @@
 		}
 	}
 </script>
+
+<style scoped>
+	.list-group-item.disabled, 
+	.list-group-item:disabled {
+		opacity: 0.5;
+		background-color: rgba(72,180,97,.2) !important;
+	}
+</style>

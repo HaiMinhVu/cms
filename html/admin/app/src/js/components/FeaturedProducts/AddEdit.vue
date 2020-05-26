@@ -51,7 +51,7 @@
 			</BButton>
 		</div>
 		<BModal v-model="showProductSelector" title="Product Selector">
-			<ProductSelector @productSelected="productSelected" />
+			<ProductSelector :selectedProducts="selectedProducts" @productSelected="productSelected" />
 		</BModal>
 	</section>
 </template>
@@ -124,11 +124,14 @@
 					await this.createAction();
 				}
 				this.submitting = false;
-				this.$bvToast.toast(`${this.description} saved`, {
+				this.$root.$bvToast.toast(`${this.description} saved`, {
 		          title: 'Featured Product List',
-		          autoHideDelay: 5000,
-		          appendToast: true
+		          autoHideDelay: 3000,
+		          appendToast: true,
+		          toaster: 'b-toaster-bottom-left',
+		          variant: 'success'
 		        });
+		        this.goBack();
 			},
 			getSaveData() {
 				return {
@@ -160,6 +163,9 @@
 				} else {
 					return 0;
 				}
+			},
+			selectedProducts() {
+				return this.products.map(product => product.sku);
 			},
 			productList: {
 				get() {

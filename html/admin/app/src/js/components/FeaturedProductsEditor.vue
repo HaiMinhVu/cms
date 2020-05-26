@@ -30,7 +30,7 @@
 	import { BButton, BIconPencil, BIconPlus, BTable } from 'bootstrap-vue';
 	import AddEdit from './FeaturedProducts/AddEdit.vue';
 	import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+	import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 	export default {
 		name: 'featured-products-editor',
@@ -44,7 +44,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 			}
 		},	
 		created() {
-			this.httpClient = new httpClient('http://localhost:8888/v1/crud');
+			this.httpClient = new httpClient;
 		},
 		mounted() {
 			this.populateDataFromApi();
