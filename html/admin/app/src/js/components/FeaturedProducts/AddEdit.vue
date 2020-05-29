@@ -71,9 +71,9 @@
 		BModal,
 		BToast
 	} from 'bootstrap-vue';
-	import ProductSelector from '../Products/Selector';
-	import ProductMediaItem from '../Products/MediaItem';
-	import sortableDirective from '../../directives/sortable.js';
+	import ProductSelector from '../Products/Selector.vue';
+	import ProductMediaItem from '../Products/MediaItem.vue';
+	// import sortableDirective from '../../directives/sortable.js';
 	import draggable from 'vuedraggable';
 
 	export default {
@@ -193,8 +193,8 @@
 			BToast,
 			draggable
 		},
-		directives: {
-			sortableDirective
-		}
+		// directives: {
+		// 	sortableDirective
+		// }
 	}
 </script>

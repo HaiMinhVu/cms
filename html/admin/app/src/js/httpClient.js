@@ -30,6 +30,10 @@ export default class httpClient {
 		return await this._client.get(endpoint, options); 
 	}
 
+	async post(endpoint, params = {}, options = {}) {
+		return await this._client.post(endpoint, params, options); 
+	}
+
 	async put(endpoint, data, options = {}) {
 		return await this._client.patch(endpoint, data, {
 			crossDomain: true,

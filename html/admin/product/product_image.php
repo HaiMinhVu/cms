@@ -20,9 +20,15 @@ include('subheader.php');
 ?>
 
 
-<div class="tab-content">
+<div class="tab-content" id="app">
 	<div class="tab-pane active"> 
 		<form method="POST" id="product_image_form" enctype="multipart/form-data">
+			<div class="row form-group">
+        		<div class="col-md-2" align="right">Files</div>
+        		<div class="col-md-8">
+            		<product-image-selector product-id="<?= intval($productid) ?>" />
+				</div>
+    		</div>
 			<div class="row form-group">
         		<div class="col-md-2" align="right">File List</div>
         		<div class="col-md-8">
