@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<ProductMediaSelector media-type="image" title="Image Selector" :product-id="productId" />
+		<ProductMediaSelector media-type="reticle" title="Reticle Selector" :product-id="productId" />
 	</section>
 </template>
 

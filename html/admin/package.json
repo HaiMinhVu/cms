@@ -46,6 +46,7 @@
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
+    "terser-webpack-plugin": "^3.0.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "vue-filepond": "^6.0.2",
     "vue-loader": "^15.9.2",

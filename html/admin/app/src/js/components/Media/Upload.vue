@@ -72,7 +72,6 @@
 		BIconCloudUpload,
 		BIconFolder,
 		BImg,
-		BIconClose,
 		BSpinner,
 		BIconDashCircleFill,
 		BAlert
@@ -271,7 +270,6 @@
 	    	BTable,
 	    	BIconCloudUpload,
 	    	BIconFolder,
-	    	BIconClose,
 	    	BImg,
 	    	BSpinner,
 	    	BIconDashCircleFill,

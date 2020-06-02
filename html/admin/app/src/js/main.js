@@ -2,6 +2,7 @@ import Vue from 'vue';
 import FeaturedProductsEditor from './components/FeaturedProductsEditor.vue';
 import MediaBrowser from './components/MediaBrowser.vue';
 import ProductImageSelector from './components/ProductImageSelector.vue';
+import ProductReticleSelector from './components/ProductReticleSelector.vue';
 import { TabsPlugin, ToastPlugin } from 'bootstrap-vue';
 import '../css/main.css';
 import { filter } from 'lodash';
@@ -12,6 +13,7 @@ Vue.use(ToastPlugin);
 Vue.component('media-browser', require('./components/MediaBrowser.vue').default);
 Vue.component('featured-products-editor', FeaturedProductsEditor);
 Vue.component('product-image-selector', ProductImageSelector);
+Vue.component('product-reticle-selector', ProductReticleSelector);
 
 $(document).ready(function(){
 	if($('#app').length) {

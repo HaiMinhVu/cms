@@ -1,22 +1,20 @@
 <template>
 	<section class="container">
-		<ul class="nav nav-tabs">
-		  <li class="nav-item" v-for="tab in tabs" :key="tab">
-		    <a @click="setTab(tab)" :class="['nav-link', { 'active': isActive(tab) }]" href="#">{{ tab | formatTitle }}</a>
-		  </li>		
-		</ul>
-		<div class="container" v-if="selected == 'media_library'">
-			<MediaLibrary :types="types" :brand-list="brandList" :httpClient="httpClient" :edit-mode="editMode" :per-page="perPage | parseInt" :force-type="forceType" @selectedAction="selectedMediaItems" />
-		</div>
-		<div class="container" v-if="selected == 'upload'">
-			<MediaUpload :types="types" :brand-list="brandList" :httpClient="httpClient" @changeTab="changeTab" :force-type="forceType" />
-		</div>
+		<BTabs>
+			<BTab title="Upload">
+				<MediaUpload :types="types" :brand-list="brandList" :httpClient="httpClient" @changeTab="changeTab" :force-type="forceType" />
+			</BTab>
+			<BTab title="Media Library" active>
+				<MediaLibrary :types="types" :brand-list="brandList" :httpClient="httpClient" :edit-mode="editMode" :per-page="perPage | parseInt" :force-type="forceType" @selectedAction="selectedMediaItems" />
+			</BTab>
+		</BTabs>
 	</section>
 </template>
 
 <script>
 	import {
-
+		BTabs,
+		BTab
 	} from 'bootstrap-vue';
 	import { isEmpty, replace, startCase } from 'lodash';
 	import httpClient from '../httpClient';
@@ -48,7 +46,6 @@
 					image: 'Image',
 					manual: 'Manual',
 					spec_sheet: 'Spec Sheet',
-					// proof_of_purchase: 'Proof of Purchase',
 					catalog: 'Catalog'
 				}
 			}
@@ -94,6 +91,8 @@
 			parseInt
 		},
 		components: {
+			BTab,
+			BTabs,
 			MediaLibrary,
 			MediaUpload
 		}

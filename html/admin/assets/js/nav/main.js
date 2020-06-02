@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
 
 
 	$('#menuToggle').on('click', function(event) {
-		$('body').toggleClass('open');
+		// $('body').toggleClass('open');
 	});
 
 	$('.search-trigger').on('click', function(event) {

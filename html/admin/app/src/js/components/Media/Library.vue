@@ -26,24 +26,34 @@
 		<hr />
 		<div v-if="hasItems">
 			<div class="row mb-1">
+				<div class="col">
+					<span v-if="showPagination">
+						<BPagination v-model="currentPage" :per-page="perPage" :total-rows="totalRows" v-if="hasItems"></BPagination>
+					</span>
+				</div>
 				<div class="col text-right">
 					Found {{ totalRows }} Items
 				</div>
 			</div>
 			<div class="row item-list">
-				<div class="col-4 col-md-3 col-lg-2 mb-3" v-for="item in items" :key="item.id">
+				<div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-3" v-for="item in items" :key="item.id">
 					<div :id="`media-library-item-${item.id}`" :class="['img-thumbnail', { 'is-selected': isSelected(item.id) }]" @click="itemAction(item)">
 						<img :src="item.url" width="100" v-if="item.is_image" />
 						<div v-else>
-							<i class="fa fa-file"></i>
+							<div class="text-center" style="max-width: 100%;">
+								<div class="fa fa-file pb-1"></div>
+								<small class="text-truncate" style="display: block;max-width: 100%;">{{ item.file_name }}</small>
+							</div>
 						</div>
 					</div>
 					<BTooltip variant="primary" :target="`media-library-item-${item.id}`" triggers="hover">{{ item.file_name }}</BTooltip>
 				</div>
 			</div>
-			<div class="row" v-if="showPagination">
+			<div class="row">
 				<div class="col">
-					<BPagination v-model="currentPage" :per-page="perPage" :total-rows="totalRows" v-if="hasItems"></BPagination>
+					<span v-if="showPagination">
+						<BPagination v-model="currentPage" :per-page="perPage" :total-rows="totalRows" v-if="hasItems"></BPagination>
+					</span>
 				</div>
 				<div class="col text-right" v-if="!editMode">
 					<BButton :disabled="!hasSelectedMediaItems" :variant="selectedButtonVariant" @click="selectedAction">
@@ -332,7 +342,6 @@
 				align-items: center;
 			}
 			> * {
-				width: 20vw;
 				height: 20vw;
 				max-width: 100%;
 				max-height: 150px;
@@ -341,14 +350,13 @@
 			&:hover {
 
 			}
-		}
-		.fa-file {
-			font-size: 4em;
+			.fa-file {
+				font-size: 2em;
+			}
 		}
 		@media screen and (min-width: 575px) {
 			.img-thumbnail {
 				> * {
-					width: 11vw;
 					height: 11vw;
 				}
 			}
@@ -358,6 +366,16 @@
 				> * {
 					width: 8vw;
 					height: 8vw;
+				}
+				.fa-file {
+					font-size: 3em;
+				}
+			}
+		}
+		@media screen and (min-width: 1200px) {
+			.img-thumbnail {
+				.fa-file {
+					font-size: 4em;
 				}
 			}
 		}
