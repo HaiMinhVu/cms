@@ -1,5 +1,10 @@
 <?php 
 
+require __DIR__ . '/html/admin/vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $server = getenv('DB_HOST');
 $dbname = getenv('DB_NAME');
 $username = getenv('DB_USERNAME');
@@ -15,7 +20,3 @@ session_set_cookie_params(0);
 session_start();
 
 error_reporting(E_ERROR | E_PARSE);
-
-require __DIR__ . '/html/admin/vendor/autoload.php';
-
-?>
