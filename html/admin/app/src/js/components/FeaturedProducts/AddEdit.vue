@@ -28,20 +28,26 @@
 				</div>
 			</div>
 			<div class="list-group"> 
-				<draggable v-model="productList">
-					<div class="list-group-item" v-for="(product, idx) in products" :key="idx">
-						<div class="row align-items-center">
-							<div class="col-1 move-handler">
-								<BIconList />
-							</div>
-							<div class="col">
-								<ProductMediaItem :product="product" />
-							</div>
-							<div class="col-1">
-								<BIconTrash variant="danger" @click="removeProduct(product.sku)" />
+				<draggable 
+					v-model="productList" 
+					@start="drag = true" 
+					@end="drag = false" 
+					v-bind="dragOptions">
+					<transition-group type="transition" :name="!drag ? 'flip-list' : null">
+						<div class="list-group-item" v-for="(product, idx) in products" :key="`${product.id}_${idx}`">
+							<div class="row align-items-center">
+								<div class="col-1 move-handler">
+									<BIconList />
+								</div>
+								<div class="col">
+									<ProductMediaItem :product="product" />
+								</div>
+								<div class="col-1">
+									<BIconTrash variant="danger" @click="removeProduct(product.sku)" />
+								</div>
 							</div>
 						</div>
-					</div>
+					</transition-group>
 				</draggable>
 				
 			</div>
@@ -71,9 +77,8 @@
 		BModal,
 		BToast
 	} from 'bootstrap-vue';
-	import ProductSelector from '../Products/Selector';
-	import ProductMediaItem from '../Products/MediaItem';
-	import sortableDirective from '../../directives/sortable.js';
+	import ProductSelector from '../Products/Selector.vue';
+	import ProductMediaItem from '../Products/MediaItem.vue';
 	import draggable from 'vuedraggable';
 
 	export default {
@@ -90,7 +95,8 @@
 				description: '',
 				showProductSelector: false,
 				submitting: false,
-				products: []
+				products: [],
+				drag: null
 			}
 		},
 		created() {
@@ -174,7 +180,16 @@
 				set(products) {
 					this.$set(this, 'products', products);
 				}
-			}
+			},
+			dragOptions() {
+		      return {
+		        animation: 200,
+		        group: "description",
+		        disabled: false,
+		        ghostClass: "ghost",
+		        forceFallback: true
+		      }
+		    }
 		},	
 		components: {
 			BButton,
@@ -192,9 +207,19 @@
 			ProductSelector,
 			BToast,
 			draggable
-		},
-		directives: {
-			sortableDirective
 		}
 	}
 </script>
+
+<style>
+	.flip-list-move {
+		transition: transform 0.5s;
+	}
+	.no-move {
+		transition: transform 0s;
+	}
+	.ghost {
+	  opacity: 0.5;
+	  background: #c8ebfb;
+	}
+</style>

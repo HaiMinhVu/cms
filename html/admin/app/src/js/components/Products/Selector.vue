@@ -7,7 +7,6 @@
 					<ProductMediaItem :product="product" />
 				</BListGroupItem>
 			</BListGroup>
-			<div>
 		</div>
 	</section>
 </template>
@@ -29,7 +28,7 @@
 		BMediaBody 
 	} from 'bootstrap-vue';
 	import httpClient from '../../httpClient.js';
-	import ProductMediaItem from './MediaItem';
+	import ProductMediaItem from './MediaItem.vue';
 
 	export default {
 		props: {

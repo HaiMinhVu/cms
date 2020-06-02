@@ -18,7 +18,7 @@ include('manage_function.php');
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" align="right">
-                        <button type="button" class="btn btn-outline-info btn-sm" title="Add New File" onclick="location.href='file_add.php'"><i class="fa fa-plus"></i>&nbsp; Add</button>
+                        <button type="button" style="display:none" class="btn btn-outline-info btn-sm" title="Add New File" onclick="location.href='file_add.php'"><i class="fa fa-plus"></i>&nbsp; Add</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -42,8 +42,9 @@ include('manage_function.php');
 	                </ul><!------------ end of header tab ------------>
 
 	                <!------------ begin of content ------------>
-                    <div class="row">
-                        <div class="table-responsive">
+                    <div id="app" class="row">
+                        <media-browser />
+                        <div class="table-responsive" style="display: none">
                             
                             
                             <table id="image_table" class="table table-bordered table-hover" width="100%">

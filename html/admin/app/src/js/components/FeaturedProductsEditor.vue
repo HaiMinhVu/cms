@@ -27,10 +27,16 @@
 
 <script>
 	import httpClient from '../httpClient';
-	import { BButton, BIconPencil, BIconPlus, BTable } from 'bootstrap-vue';
+	import { 
+		BButton, 
+		BIconPencil, 
+		BIconPlus, 
+		BTable 
+	} from 'bootstrap-vue';
 	import AddEdit from './FeaturedProducts/AddEdit.vue';
 	import 'bootstrap/dist/css/bootstrap.css'
 	import 'bootstrap-vue/dist/bootstrap-vue.css'
+	
 
 	export default {
 		name: 'featured-products-editor',
