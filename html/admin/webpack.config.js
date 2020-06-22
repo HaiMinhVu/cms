@@ -12,7 +12,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    entry: ['./app/src/js/main.js', './app/src/css/main.css'],
+    entry: ['./app/src/js/main.js', './app/src/css/main.scss'],
     output: {
         filename: './assets/dist/main.js',
         path: path.resolve(__dirname)

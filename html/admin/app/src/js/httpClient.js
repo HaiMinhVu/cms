@@ -27,15 +27,22 @@ export default class httpClient {
 	}
 
 	async get(endpoint, options = {}) {
-		return await this._client.get(endpoint, options); 
+		return await this._client.get(endpoint, options);
 	}
 
 	async post(endpoint, params = {}, options = {}) {
-		return await this._client.post(endpoint, params, options); 
+		return await this._client.post(endpoint, params, options);
 	}
 
 	async put(endpoint, data, options = {}) {
 		return await this._client.patch(endpoint, data, {
+			crossDomain: true,
+			...options
+		});
+	}
+
+	async delete(endpoint, data, options = {}) {
+		return await this._client.delete(endpoint, data, {
 			crossDomain: true,
 			...options
 		});

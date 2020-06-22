@@ -1,5 +1,8 @@
 <?php
 
+use App\Services\AWS;
+use Stringy\Stringy as S;
+
 /************************ functions used by multiple pages ****************************/
 function brand_list_select_option($cms_connect){
     $sql = "SELECT id, name FROM list_manufacture WHERE manufacture_active = 1 ORDER BY id";
@@ -12,21 +15,23 @@ function brand_list_select_option($cms_connect){
 }
 
 /****************** functions for CATEGORY page ************************/
-function treeview_category_array($cms_connect){	
+function treeview_category_array($cms_connect){
 	$output = array();
-	$sql = "SELECT pc.id, pc.label, pc.parent, concat(sl.url, ml.description, fm.file_name) as url, pc.thumbnail
+	$sql = "SELECT pc.id, pc.label, pc.parent, sl.label as brand, concat(ml.description, fm.file_name) as path, pc.thumbnail
 			FROM product_category pc LEFT JOIN file_manager fm ON fm.ID = pc.thumbnail
 									LEFT JOIN site_list sl ON sl.id = fm.site_id
 						            LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
-			WHERE status = 1  
+			WHERE status = 1
 			";
 	$result = $cms_connect->query($sql);
-	
+
 
 	while($row = $result->fetch_assoc()){
 		$image = '';
+        $brandSlug = S::create($row['brand'])->slugify('-');
 		if($row['thumbnail'] != 0){
-			$image = '<a href="'.$row['url'].'" data-toggle="lightbox" data-max-height="600"><img src="'.$row['url'].'" height=30></a>';
+            $url = AWS::imageLink("{$brandSlug}/{$row['path']}");
+			$image = '<a href="'.$row['url'].'" data-toggle="lightbox" data-max-height="600"><img src="'.$url.'" height=30></a>';
 		}
 		$tmp = array();
 		$tmp['id'] = $row['id'];
@@ -43,7 +48,7 @@ function category_select_option($cms_connect){
 	$result = $cms_connect->query($sql);
 	$output = '';
     foreach ($result as $row){
-        $output .='<option value = "'.$row['id'].'">'.$row['label'].'</option>';    
+        $output .='<option value = "'.$row['id'].'">'.$row['label'].'</option>';
     }
     return $output;
 }
@@ -53,7 +58,7 @@ function associated_image_by_catID($cms_connect, $catID){
 	$sql = "SELECT id, file_id FROM product_category_hero WHERE pid = $catID ORDER BY pch_order";
 	$stmt = $cms_connect->query($sql);
 	while($row = $stmt->fetch_assoc()){
-		$img[] = $row['file_id'];	
+		$img[] = $row['file_id'];
 	}
 	return $img;
 }
@@ -82,7 +87,7 @@ function image_url_name_by_id($cms_connect, $imageid){
 
 /****************** functions for NAVIGATION page ************************/
 
-function treeview_navigation_array($cms_connect){	
+function treeview_navigation_array($cms_connect){
 	$output = array();
 	$sql = "SELECT id, label, parent FROM nav_cat";
 	$result = $cms_connect->query($sql);
@@ -104,7 +109,7 @@ function nav_select_option_recursive($cms_connect, $pid = 0, $indent = ''){
         echo '<option value = "'.$row['id'].'">'.$indent.$row['label'].'</option>';
         nav_select_option_recursive($cms_connect, $row['id'], $indent.$row['label'].' -> ');
         //nav_select_option_recursive($cms_connect, $row['id'], $indent.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-    }    
+    }
 }
 
 
@@ -118,7 +123,7 @@ function all_image_select_option($cms_connect){
     $output = '';
 
     foreach ($result as $row){
-	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';	    
+	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
     }
 
     return $output;
@@ -135,7 +140,7 @@ function all_image_select_option_imgview($cms_connect){
     foreach ($result as $row){
     	$url = str_replace(' ', '%20', $row['url']);
 	    $output .='<option data-content="<img height=\'50\' src=\''.$url.'\'> '.$row['file_name'].'" value = "'.$row['ID'].'"></option>';
-	    //$output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';	    
+	    //$output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
     }
 
     return $output;

@@ -38,10 +38,10 @@
 			      	<BFormRadio name="mainImageRadio" v-model="mainImageId" :value="item.id" />
 			      </td>
 			      <td>
-			      	<BIconPencilSquare variant="primary" size="lg" scale="1.3" @click="edit(item)" />
+			      	<BIconPencilSquare variant="primary" size="lg" scale="1.2" @click="edit(item)" />
 			      </td>
 			      <td>
-			      	<BIconDashCircleFill variant="danger" size="lg" scale="1.3" @click="remove(item.id)" /></td>
+			      	<BIconTrash variant="danger" size="lg" scale="1.2" @click="remove(item.id)" /></td>
 			    </tr>
 		  	</draggable>
 		</table>
@@ -93,6 +93,7 @@
 		BIconPencilSquare,
 		BIconCloudUpload,
 		BIconDashCircleFill,
+		BIconTrash,
 		BFormRadio,
 		BTable,
 		BButtonGroup
@@ -310,6 +311,7 @@
 			BIconPencilSquare,
 			BIconCloudUpload,
 			BIconDashCircleFill,
+			BIconTrash,
 			BFormRadio,
 			BTable,
 			BButtonGroup,
@@ -320,7 +322,7 @@
 	}
 </script>
 
-<style>
+<style scoped lang="scss">
 	.table th, .table td {
 		vertical-align: middle !important;
 		text-align: center;
@@ -332,7 +334,10 @@
 		transition: transform 0s;
 	}
 	.ghost {
-	  opacity: 0.5;
-	  background: #c8ebfb;
+	  	opacity: 0.5;
+	  	background: #c8ebfb;
+	}
+	.b-icon {
+		cursor: pointer;
 	}
 </style>
