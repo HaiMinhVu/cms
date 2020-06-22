@@ -1,5 +1,5 @@
-<?php 
-include('../../newconnect.php'); 
+<?php
+include('../../newconnect.php');
 include('../../key.php');
 
 $message = '';
@@ -11,22 +11,22 @@ else{
 	if(isset($_POST) && !empty($_POST)){
 
 		$message = "";
-		
+
 		$username = $_POST['username'];//Storing username in $username variable.
 		$password = $_POST['password']; //Storing password in $password variable.
 		$username = mysqli_real_escape_string($cms_connect, $username);
 		$password = mysqli_real_escape_string($cms_connect, $password);
-		// $sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and password = aes_encrypt('$password','$key') and status='1'";
-		$sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and status='1'";
+		$sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and password = aes_encrypt('$password','$key') and status='1'";
+		// $sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and status='1'";
 		$result = $cms_connect->query($sql);
 		$row = $result->fetch_assoc();
 		$timestamp = date('Y-m-d G:i:s');
-		
+
 		$message = $match;
 		$num_rows = mysqli_num_rows($result);
 		if ($num_rows <= 0){
 			$message = "<label><font color='red'>Log in failed. Check your username and password</font></label>";
-		} 
+		}
 		else{
 			// set session
 			$_SESSION['user'] = $row["username"];
@@ -58,7 +58,7 @@ else{
 
 </head>
 <body>
-  	
+
 	<div class="row" style="margin-top: 100px">
 		<div class="col-xs-12 col-sm-12 col-md-12 ">
 			<h1 align="center" style="color: blue"><strong>SELLMARK CONTENT MANAGEMENT</strong></h1>
@@ -69,7 +69,7 @@ else{
 			<p>Please use the login credentials provided to you to access Sellmark External Resources.</p>
 			<p align="center"><?php echo $message; ?></p>
 			<div id="center">
-				
+
 				<form class="form-horizontal" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 					<div class="form-group">
 	  					<div class="col-sm-10">
