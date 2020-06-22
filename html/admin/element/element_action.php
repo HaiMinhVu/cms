@@ -106,7 +106,7 @@ if($_POST['show_action'] == 'add_tradeshow'){
 	else{
 		echo "Failed.";
 	}
-}	
+}
 
 /****************** submit trade show update form ******************/
 if($_POST['show_action'] == 'update_tradeshow'){
@@ -170,7 +170,7 @@ if($_POST['slider_action'] == 'add_slider'){
 	$slider_link = $_POST['slider_link'];
 	$slider_text = $_POST['slider_text'];
 	$slider_order = $_POST['slider_order'];
-	
+
 	$user_id = $_SESSION['uid'];
 
 	if($slider_pid == 0){
@@ -178,7 +178,7 @@ if($_POST['slider_action'] == 'add_slider'){
 		$stmt = $cms_connect->prepare($newpageSql);
 		$stmt->bind_param("sii", $page_name, $user_id, $user_id);
 		if($stmt->execute()){
-			$slider_pid = $cms_connect->insert_id;    
+			$slider_pid = $cms_connect->insert_id;
 		}
 		else{
 			echo $cms_connect->errorInfo();
@@ -194,7 +194,7 @@ if($_POST['slider_action'] == 'add_slider'){
 	else{
 		echo "Failed.";
 	}
-}	
+}
 
 /****************** submit slider update form ******************/
 if($_POST['slider_action'] == 'update_slider'){
@@ -204,7 +204,7 @@ if($_POST['slider_action'] == 'update_slider'){
 	$slider_link = $_POST['slider_link'];
 	$slider_text = $_POST['slider_text'];
 	$slider_order = $_POST['slider_order'];
-	
+
 	$user_id = $_SESSION['uid'];
 
 	$updatesql = "UPDATE slider_image SET file_id = ?, pid = ?, link_value = ?, text = ?, slider_order = ?, uid_modified = ? WHERE id = ?";
@@ -453,7 +453,7 @@ if($_POST['category_action'] == 'on_image_change'){
 	$selected_imgIDArr = $_POST['imgIDs'];
 	$existing_Order_imgIDArr = associated_image_by_catID($cms_connect, $catID);
 	$output = "";
-	
+
 	// add to non order array if new cat img selected
 	$non_existing_Order_imgIDArr = array();
 	foreach ($selected_imgIDArr as $imgId){

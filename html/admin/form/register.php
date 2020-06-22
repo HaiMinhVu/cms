@@ -5,20 +5,21 @@ require_once('function.php');
 ?>
 
 
-<div class="content mt-3"> <!-- begining of display content -->
+<div id="app" class="content mt-3"> <!-- begining of display content -->
 <span id="alert_action"></span>
 	<div class="row">
-        <div class="col-md-12">
+			<form-builder />
+        <div class="col-md-12" style="display:none">
             <div class="card">
                 <div class="card-header">
                     <strong class="card-title">Registration Form</strong>
 	                <small><span class="float-right mt-1">
-		                <button type="button" name="back" id="back" class="btn btn-outline-info btn-sm" onclick="window.history.back()"><span class="fa fa-arrow-left" title="Go Back"></span> Back</button>    
+		                <button type="button" name="back" id="back" class="btn btn-outline-info btn-sm" onclick="window.history.back()"><span class="fa fa-arrow-left" title="Go Back"></span> Back</button>
 		            </span></small>
                 </div>
                 <div class="card-body">
                 	<form method="POST" id="register_form" enctype="multipart/form-data">
-                		
+
 	                	<div class="form-group row">
 	                		<div class="col-md-3" align="right">First Name <span style="color:red">*</span></div>
 	                		<div class="col-md-6"><input id="firstname" name="firstname" placeholder="First Name" class="form-control" type="text" required/></div>
@@ -137,7 +138,7 @@ require_once('function.php');
 							<span><i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i> Please Wait ...</span>
 	                    </div>
 	                    <div style="text-align:center">
-	                        <input type="submit" class="btn btn-outline-info" value="Submit" />    
+	                        <input type="submit" class="btn btn-outline-info" value="Submit" />
 	                    </div>
 	                    <br>
 	                </form>
@@ -186,17 +187,17 @@ $(document).ready(function(){
                 window.location.reload();
 
                 //localStorage.setItem("mess", mess);
-                
+
             }
         });
 	});
-	
+
 	/*********** filepond for upload files ***********/
     var files = FilePond.create(document.querySelector('input[id="proof"]'),
         {
             // all property of filepond go in here
             allowImagePreview: false,
-            
+
         }
     );
 

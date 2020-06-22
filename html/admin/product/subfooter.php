@@ -1,5 +1,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
+	$("#<?= basename($_SERVER['PHP_SELF'], '.php'); ?>").addClass('active');
+
 	$('#switch_product').selectpicker('val', "<?php echo $productinfo['id']?>");
 
 	$('#switch_product').change(function(){

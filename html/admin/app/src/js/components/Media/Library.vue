@@ -63,7 +63,7 @@
 			</div>
 			<BSidebar lazy id="sidebar-right" :title="editItem.file_name" width="600px" right shadow v-model="showSidebar">
 		      <div class="m-4" v-click-outside="hideSidebar">
-		      	<BImg :src="editItem.url" fluid thumbnail v-if="editItem.is_image"></BImg>    
+		      	<BImg :src="editItem.url" fluid thumbnail v-if="editItem.is_image"></BImg>
 				<div v-else>
 					<i class="fa fa-file"></i>
 				</div>
@@ -125,6 +125,7 @@
 				type: Object
 			},
 			editMode: Boolean,
+			singleSelector: Boolean,
 			perPage: {
 				type: Number,
 				default: 48
@@ -221,7 +222,8 @@
 			},
 			selectItemAction(item) {
 				const newItem = [item.id];
-				this.selectedMediaItems = xor(this.selectedMediaItems, newItem);
+				const selectedMediaItems = this.singleSelector ? newItem : xor(this.selectedMediaItems, newItem);
+				this.selectedMediaItems = selectedMediaItems;
 			},
 			editItemAction(item) {
 				if(!this.showSidebar) {
@@ -259,7 +261,7 @@
 			},
 			hasBrand() {
 				return this.selectedBrand && this.selectedBrand != 'all';
-			},	
+			},
 			hasEditItem() {
 				return !isEmpty(this.editItem);
 			},
@@ -276,8 +278,8 @@
 				if(this.hasEditItem) {
 					const fullFileName = this.editItem.file_name;
 					const fileNameArray = fullFileName.split('.').slice(0,-1).join('.');
-					return fileNameArray; 	
-				} 
+					return fileNameArray;
+				}
 				return ''
 			},
 			selectedButtonVariant() {

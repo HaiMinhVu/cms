@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Services;
 
@@ -6,6 +6,8 @@ use Aws\S3\S3Client;
 use Aws\S3\ObjectUploader;
 
 class AWS {
+
+	const IMAGE_CDN = 'https://d4ursusm8s4tk.cloudfront.net';
 
 	private $S3Client;
 	private $bucket;
@@ -49,5 +51,27 @@ class AWS {
 
         return self::$instance;
     }
+
+	// Temporarily hard coding config values since this is a temporary class
+	public function imageLink($fileKey, $imageWidth = null, $additionalOptions = [])
+	{
+	   $options = [
+		   "bucket" => "sellmark-media-bucket",
+		   "key" => $fileKey,
+		   'edits' => [
+			   'resize' => []
+		   ]
+	   ];
+	   if($imageWidth) {
+		   $options['edits']['resize'] = [
+				   'width' => $imageWidth,
+				   'fit' => 'contain'
+
+		   ];
+	   }
+	   $options = base64_encode(json_encode($options));
+	   $imageCDN = self::IMAGE_CDN;
+	   return "{$imageCDN}/{$options}";
+   }
 
 }

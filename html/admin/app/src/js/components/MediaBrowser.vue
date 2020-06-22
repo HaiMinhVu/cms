@@ -5,7 +5,16 @@
 				<MediaUpload :types="types" :brand-list="brandList" :httpClient="httpClient" @changeTab="changeTab" :force-type="forceType" />
 			</BTab>
 			<BTab title="Media Library" active>
-				<MediaLibrary :types="types" :brand-list="brandList" :httpClient="httpClient" :edit-mode="editMode" :per-page="perPage | parseInt" :force-type="forceType" @selectedAction="selectedMediaItems" />
+				<MediaLibrary
+					:types="types"
+					:brand-list="brandList"
+					:httpClient="httpClient"
+					:edit-mode="editMode"
+					:per-page="perPage | parseInt"
+					:force-type="forceType"
+					:single-selector="singleSelector"
+					@selectedAction="selectedMediaItems"
+				/>
 			</BTab>
 		</BTabs>
 	</section>
@@ -33,6 +42,10 @@
 			forceType: {
 				type: String,
 				default: null
+			},
+			singleSelector: {
+				type: Boolean,
+				default: false
 			}
 		},
 		data() {
@@ -51,7 +64,7 @@
 			}
 		},
 		created() {
-			this.$set(this, 'selected', 'media_library');	
+			this.$set(this, 'selected', 'media_library');
 			this.init();
 		},
 		methods: {

@@ -9,3 +9,14 @@
 .navbar {
 	flex-wrap: wrap !important;
 }
+
+body {
+    &.modal-open {
+        .modal {
+            z-index: 1000;
+        }
+        .modal-backdrop {
+            z-index: 999;
+        }
+    }
+}
