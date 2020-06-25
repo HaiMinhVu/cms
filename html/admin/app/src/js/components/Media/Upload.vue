@@ -15,8 +15,11 @@
 	<div v-if="hasFiles">
 		<div class="row">
 			<BTable striped :items="uploadedItems" :fields="fields">
-				<template v-slot:cell(image)="row">
-					<BImg width="200" height="auto" :src="row.item.base64image" />
+				<template v-slot:cell(preview)="row">
+					<BImg width="200" height="auto" :src="row.item.base64image" v-if="row.item.isImage" />
+                    <div class="text-center" v-else>
+                        <div class="fa fa-file"></div>
+                    </div>
 				</template>
 				<template v-slot:cell(type)="row" v-if="showTypeSelector">
 					<BFormGroup label="Type">
@@ -60,17 +63,18 @@
 </template>
 
 <script>
-	import { 
-		BButton, 
+	import {
+		BButton,
 		BFormSelect,
 		BFormGroup,
-		BFormFile, 
+		BFormFile,
 		BJumbotron,
 		BListGroup,
 		BListGroupItem,
 		BTable,
 		BIconCloudUpload,
 		BIconFolder,
+        BIconFiles,
 		BImg,
 		BSpinner,
 		BIconDashCircleFill,
@@ -95,13 +99,13 @@
 			}
 		},
 	    data() {
-	        return { 
-	        	fields: ['image', 'name', 'type', 'brand'],
+	        return {
+	        	fields: ['preview', 'name', 'type', 'brand'],
 	        	fileList: [],
 	        	uploadedItems: [],
 	        	data: {},
 	        	uploading: false,
-	        	showValidationWarning: false 
+	        	showValidationWarning: false
 	        };
 	    },
 	    created() {
@@ -113,9 +117,11 @@
 	        parseUploadedItems(files) {
 	        	return Promise.all(
 		        	files.map(async file => {
+                        let isImage = this.isImage(file);
 		    			return {
 		    				name: file.name,
-		    				base64image: await this.toBase64(file)
+                            isImage: isImage,
+		    				base64image: isImage ? await this.toBase64(file) : null
 		    			}
 	    			})
 	        	);
@@ -137,6 +143,9 @@
 	        		}
 	        	});
 	        },
+            isImage(file) {
+                return ['image/gif', 'image/jpeg', 'image/png'].includes(file.type);
+            },
 	        dropHandler(e) {
 	        	const { files } = e.dataTransfer;
 	        	this.inputHandler(files);
@@ -144,7 +153,7 @@
 	        browse() {
 	        	this.$refs.inputFormEl.$refs.input.click();
 	        },
-	        toBase64(file) { 
+	        toBase64(file) {
 	        	return new Promise((resolve, reject) => {
 				    const reader = new FileReader();
 				    reader.readAsDataURL(file);
@@ -177,7 +186,7 @@
 			          variant: 'success'
 			        });
 			        this.$emit('changeTab', 'media_library');
-				} 
+				}
 				this.uploading = false;
 			},
 			key(row) {
@@ -205,7 +214,7 @@
 							headers: {
 								'Content-Type': 'multipart/form-data'
 							}
-						});			
+						});
 					})
 				);
 			},
@@ -255,7 +264,7 @@
 	    	showTypeSelector() {
 	    		return !this.forceType;
 	    	}
-		},	
+		},
 		filters: {
 			snakeCase
 		},
@@ -270,6 +279,7 @@
 	    	BTable,
 	    	BIconCloudUpload,
 	    	BIconFolder,
+            BIconFiles,
 	    	BImg,
 	    	BSpinner,
 	    	BIconDashCircleFill,
@@ -292,4 +302,10 @@
 		opacity: 0;
 		margin-left: -20px;
 	}
+    table td {
+        vertical-align: middle !important;
+    }
+    .fa-file {
+        font-size: 200%;
+    }
 </style>

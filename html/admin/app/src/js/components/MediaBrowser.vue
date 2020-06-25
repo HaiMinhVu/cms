@@ -1,10 +1,10 @@
 <template>
 	<section class="container">
 		<BTabs>
-			<BTab title="Upload">
+			<BTab title="Upload" lazy>
 				<MediaUpload :types="types" :brand-list="brandList" :httpClient="httpClient" @changeTab="changeTab" :force-type="forceType" />
 			</BTab>
-			<BTab title="Media Library" active>
+			<BTab title="Media Library" active lazy>
 				<MediaLibrary
 					:types="types"
 					:brand-list="brandList"
@@ -59,7 +59,8 @@
 					image: 'Image',
 					manual: 'Manual',
 					spec_sheet: 'Spec Sheet',
-					catalog: 'Catalog'
+					catalog: 'Catalog',
+					download: 'Download'
 				}
 			}
 		},

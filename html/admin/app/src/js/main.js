@@ -7,6 +7,7 @@ import CategoryEditor from './components/Category/Edit.vue';
 import CategoryImageSelector from './components/Category/ImageSelector.vue';
 import FormBuilder from './components/FormBuilder.vue';
 import CategoryTreeView from './components/CategoryTreeView.vue';
+import FileSelector from './components/FileSelector.vue';
 import { TabsPlugin, ToastPlugin } from 'bootstrap-vue';
 import '../css/main.scss';
 import { filter } from 'lodash';
@@ -23,6 +24,7 @@ Vue.component('category-editor', CategoryEditor);
 Vue.component('category-image-selector', CategoryImageSelector);
 Vue.component('category-tree-view', CategoryTreeView);
 Vue.component('form-builder', FormBuilder);
+Vue.component('file-selector', FileSelector);
 
 window.EventBus = EventBus;
 
