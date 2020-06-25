@@ -62,10 +62,21 @@
 				</div>
 			</div>
 			<BSidebar lazy id="sidebar-right" :title="editItem.file_name" width="600px" right shadow v-model="showSidebar">
-		      <div class="m-4" v-click-outside="hideSidebar">
+			<template v-slot:footer="{ hide }">
+                <div class="d-flex bg-dark justify-content-between align-content-center text-light align-items-center px-3 py-2">
+                    <div>
+                        <BButton size="sm" variant="primary" @click="save">Save</BButton>
+                        <BButton size="sm" variant="secondary" @click="hideSidebar">Cancel</BButton>
+                    </div>
+                </div>
+            </template>
+		      <div class="m-4">
 		      	<BImg :src="editItem.url" fluid thumbnail v-if="editItem.is_image"></BImg>
 				<div v-else>
-					<i class="fa fa-file"></i>
+					<BButton variant="light" class="position-relative" :href="editItem.raw_url" target="_blank">
+						<i class="fa fa-file"></i>
+						<i class="fa fa-external-link text-light"></i>
+					</BButton>
 				</div>
 			    <div class="mt-2 mb-2">
 			    	<BFormGroup label="Display Name">
@@ -80,11 +91,6 @@
 				    	<BFormTextarea rows="5" v-model="updatedDescription"></BFormTextarea>
 				    </BFormGroup>
 			    </div>
-			    <hr />
-			    <BButton size="sm" variant="primary" @click="save">
-			    	<BIconCloudUpload></BIconCloudUpload>
-			    	Save
-			    </BButton>
 		      </div>
 		    </BSidebar>
 		</div>
@@ -111,7 +117,6 @@
 		BToast
 	} from 'bootstrap-vue';
 	import { isEmpty, xor } from 'lodash';
-	import ClickOutside from 'vue-click-outside'
 
 	export default {
 		props: {
@@ -160,15 +165,12 @@
 			}
 		},
 		methods: {
-			editItemFileNameChanged() {
-
-			},
 			async save() {
 				await this.httpClient.put(`file/${this.editItem.id}`, {
 					description: this.updatedDescription,
 					display_name: this.updatedDisplayName
 				});
-
+				await this.getData();
 				this.$root.$bvToast.toast(`${this.editItem.file_name} saved`, {
 		          title: 'Featured Product List',
 		          autoHideDelay: 3000,
@@ -320,9 +322,6 @@
 			BTooltip,
 			BImg,
 			BToast
-		},
-		directives: {
-			ClickOutside
 		}
 	}
 </script>
@@ -332,8 +331,6 @@
 		.img-thumbnail {
 			height: 100%;
 			width: 100%;
-			// max-width: 150;
-			// max-height: 150px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -384,5 +381,13 @@
 	}
 	.is-selected {
 		outline: 4px solid #007bff;
+	}
+	.fa {
+		&.fa-external-link {
+			transform: translateX(-6px) translateY(-20px);
+		    z-index: 9999;
+		    position: absolute;
+		    left: 50%;
+		}
 	}
 </style>
