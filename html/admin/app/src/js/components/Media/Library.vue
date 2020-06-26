@@ -384,7 +384,7 @@
 	}
 	.fa {
 		&.fa-external-link {
-			transform: translateX(-6px) translateY(-20px);
+			transform: translateX(-6px) translateY(14px);
 		    z-index: 9999;
 		    position: absolute;
 		    left: 50%;

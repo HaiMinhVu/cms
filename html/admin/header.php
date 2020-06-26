@@ -22,7 +22,7 @@ if(!isset($_SESSION['user'])){
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 	    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-	    <title>Sellmark Content Management</title>
+	    <title>Sellmark Product Information Manager</title>
 
 	<!-- All CSS -->
 		<!-- general -->
@@ -42,7 +42,7 @@ if(!isset($_SESSION['user'])){
 
         <!-- date range picker -->
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-		
+
 		<!-- dialog pop up -->
 		<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
@@ -86,7 +86,7 @@ if(!isset($_SESSION['user'])){
 
         <!-- webdatarocks for reporting tool-->
         <script src="<?php echo $root?>/assets/js/webdatarocks.toolbar.min.js"></script>
-		<script src="<?php echo $root?>/assets/js/webdatarocks.js"></script>	
+		<script src="<?php echo $root?>/assets/js/webdatarocks.js"></script>
 
 		<!-- date range picker -->
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -109,8 +109,8 @@ if(!isset($_SESSION['user'])){
 	    <!-- navigation -->
 	    <script src="<?php echo $root?>/assets/js/nav/main.js"></script>
 
-	    
-		
+
+
 		<!-- filepond to upload images and documents-->
         <script type="text/javascript" src="<?php echo $root?>/assets/js/filepond-plugin-file-encode.min.js"></script>
         <script type="text/javascript" src="<?php echo $root?>/assets/js/filepond-plugin-file-validate-size.min.js"></script>
@@ -147,13 +147,13 @@ if(!isset($_SESSION['user'])){
 		                            <li><i class="fa fa-file-text-o"></i><a href="<?php echo $root?>/form/register.php">Form</a></li>
 		                        </ul>
 		                    </li>
-		                    
+
 		                <h3 class="menu-title">Administrator</h3>
 		                    <li class="menu-item-has-children dropdown">
 		                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="menu-icon fa fa-users"></i>Users</a>
 		                        <ul class="sub-menu children dropdown-menu">
 		                            <li><i class="menu-icon fa fa-id-card"></i><a href="<?php echo $root?>/admin/users.php">User Manager</a></li>
-		                            
+
 		                        </ul>
 		                    </li>
 
@@ -176,12 +176,12 @@ if(!isset($_SESSION['user'])){
 		                        	<?php
 		                        	//echo breadcrumbs();
 		                        	?>
-		                            
+
 		                        </ol>
 		                    </div>
 		                </div>
 		            </div>
-		            
+
 		            <div class="col-sm-5">
 	                    <div class="user-area dropdown float-right">
 	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -196,7 +196,7 @@ if(!isset($_SESSION['user'])){
 		        </div>
 
 		    </header> <!-- End of Right Panel Header-->
-		    
+
 
 		    <div class="content mt-3"> <!-- begin of main content section -->
 		    	<div id="pagetop"></div>
