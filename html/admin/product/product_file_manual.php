@@ -17,8 +17,13 @@ $associatedManualArr = associated_manual_by_product_id($cms_connect, $productid)
 include('subheader.php');
 ?>
 
+<div class="content mt-3" id="app"> <!-- begining of display content -->
+    <div class="container mx-auto">
+	       <file-selector file-type="manual" title="Manuals" product-id="<?= $_GET['id'] ?>" />
+    </div>
+</div> <!-- end of display content -->
 
-<div class="tab-content">
+<div class="tab-content" style="display:none">
 
 	<form method="POST" id="product_manual_form" enctype="multipart/form-data">
 		<div class="row form-group">
@@ -43,7 +48,7 @@ include('subheader.php');
                 </table>
     		</div>
     	</div>
-    	
+
 	</form>
 	<div style="text-align:center"> <!-- button submit form -->
     	<button type="submit" class="btn btn-outline-info" title="Save" form="product_manual_form"><i class="fa fa-floppy-o"></i>&nbsp; Save</button>
@@ -52,13 +57,13 @@ include('subheader.php');
 
 
 </div> <!-- end tab content-->
-	                
+
 
 
 
 <script type="text/javascript">
 
-$(document).ready(function(){	
+$(document).ready(function(){
 	$('#product_file').addClass('active');
 
 	$(window).on("load", function(){
@@ -92,7 +97,7 @@ $(document).ready(function(){
 	                $('#manual_table_body').append(mess);
 	  				$('#manual_table_body').sortable();
 	  				$('#manual_table_body select[name*="languages"]').selectpicker('refresh');
-	  				
+
 	            }
 	        });
 	    }
@@ -106,7 +111,7 @@ $(document).ready(function(){
 	$(document).on('click', '.disassociate', function(){
 		var Manuals = $("#fileIDs").val();
         var deletedManual = $(this).attr("id");
-        for( var i = 0; i < Manuals.length; i++){ 
+        for( var i = 0; i < Manuals.length; i++){
 		   	if(Manuals[i] == deletedManual){
 		    	Manuals.splice(i, 1); // to remove associated image
 		   	}
@@ -131,7 +136,7 @@ $(document).ready(function(){
             success: function(mess){
             	//console.log(mess);
             	localStorage.setItem("manual_result", mess);
-                window.location.reload(); 
+                window.location.reload();
             }
         });
 

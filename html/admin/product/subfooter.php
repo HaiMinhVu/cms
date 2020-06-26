@@ -1,7 +1,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$("#<?= basename($_SERVER['PHP_SELF'], '.php'); ?>").addClass('active');
-
+	console.log(<?= json_encode($productinfo); ?>);
 	$('#switch_product').selectpicker('val', "<?php echo $productinfo['id']?>");
 
 	$('#switch_product').change(function(){
@@ -23,4 +23,3 @@ $(document).ready(function(){
         </div>
     </div>
 </div> <!-- end of display content -->
-
