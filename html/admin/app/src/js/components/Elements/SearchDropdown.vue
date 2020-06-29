@@ -2,6 +2,9 @@
     <section>
         <BFormInput placeholder="Select or type to search" :value="selectedValue" v-model="inputField" @focus="setFocus" @blur="unsetFocus($event)" :debounce="debounce" />
         <BListGroup v-if="focused">
+            <BListGroupItem v-if="doesNotHaveOptions" disabled>
+                <p class="mb-0">{{ emptyText }}</p>
+            </BListGroupItem>
             <BListGroupItem v-for="option in options" :disabled="isDisabled(option.key)" class="text-dark" :key="option.key" @click="select($event, option)">{{ option.value }}</BListGroupItem>
         </BListGroup>
     </section>
@@ -20,6 +23,10 @@
             debounce: {
                 type: Number,
                 default: 500
+            },
+            emptyText: {
+                type: String,
+                default: 'No files available'
             },
             options: {
                 type: Array,
@@ -62,6 +69,9 @@
             }
         },
         computed: {
+            doesNotHaveOptions() {
+                return this.options.length == 0;
+            },
             selected() {
                 const selected = this.options.find(o => o.key == this.selectedKey);
                 return (selected) ? selected.value : null;
