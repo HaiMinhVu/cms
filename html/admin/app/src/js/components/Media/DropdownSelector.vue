@@ -9,7 +9,6 @@
                     @selected="selectedAction"
                     :selected-key="selectedKey"
                     :selected-value="selectedValue"
-                    :empty-text="emptyText"
                     :type="fileType"
                     />
             </div>
