@@ -44,20 +44,25 @@ $product_availability = product_availability($cms_connect, $productid);
 						<td>Vendor</td>
 						<td><input type="checkbox" name="vendor" <?php echo $product_availability['vendor_res'] == "1" ? "checked" : ""?>></td>
 					</tr>
-					<tr>
-						<td>MSRP</td>
-						<td><input type="text" name="msrp" value="<?php echo $product_availability['msrp']?>" class="form-control"></td>
+                    <tr>
+						<td>Allow Backorders</td>
+						<td><input type="checkbox" name="allow_backorders" <?php echo $product_availability['allow_backorders'] == "1" ? "checked" : ""?>></td>
 					</tr>
 					<tr>
-						<td>Online Price</td>
-						<td><input type="text" name="online_price" value="<?php echo $product_availability['online_price']?>" class="form-control"></td>
+						<td>MSRP *</td>
+						<td><input type="text" name="msrp" disabled value="<?php echo $product_availability['msrp']?>" class="form-control"></td>
 					</tr>
 					<tr>
-						<td>Quantity on Hand</td>
-						<td><input type="text" name="quantity" value="<?php echo $product_availability['total_quantity_on_hand']?>" class="form-control"></td>
+						<td>Online Price *</td>
+						<td><input type="text" name="online_price" disabled value="<?php echo $product_availability['online_price']?>" class="form-control"></td>
+					</tr>
+					<tr>
+						<td>Quantity on Hand *</td>
+						<td><input type="text" name="quantity" disabled value="<?php echo $product_availability['total_quantity_on_hand']?>" class="form-control"></td>
 					</tr>
 
 				</table>
+                <p><strong>* Values set in Netsuite</strong></p>
 				<input type="hidden" name="nsid" value="<?php echo $product_availability['nsid']?>">
 				<div style="text-align:center"> <!-- button submit form -->
 			    	<button type="submit" class="btn btn-outline-info" title="Save" ><i class="fa fa-floppy-o"></i>&nbsp; Save</button>
@@ -66,9 +71,6 @@ $product_availability = product_availability($cms_connect, $productid);
 		</div>
 	</form>
 </div>
-
-
-
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -82,7 +84,7 @@ $(document).ready(function(){
 	});
 
 	$('#product_availability_form').submit(function(e){
-    	event.preventDefault();
+    	e.preventDefault();
         var data = new FormData(this);
         data.append("action", "update_availability");
         data.append("productid", "<?php echo $productid?>");
@@ -95,7 +97,7 @@ $(document).ready(function(){
             processData:false,
             success: function(mess){
             	localStorage.setItem("update_availability_result", mess);
-                window.location.reload(); 
+                window.location.reload();
             }
         });
     });

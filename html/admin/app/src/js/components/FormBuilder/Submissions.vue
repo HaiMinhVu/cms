@@ -11,19 +11,10 @@
       @row-selected="rowSelected"
       v-if="hasSubmissions"
     />
-    <BListGroup v-if="false">
-      <BListGroupItem class="mb-1" v-for="submission in submissions" :key="`submission_${submission.id}`">
-        <div class="row">
-          <div class="col-md-6 col-lg-4" v-for="field_submission in submission.field_submissions" :key="`field_submission_${field_submission.id}`">
-            {{ field_submission.form_field.description }}: <strong>{{ getValue(field_submission) }}</strong>
-          </div>
-        </div>
-      </BListGroupItem>
-    </BListGroup>
-    <BSidebar v-model="hasSelectedRow">
+    <BSidebar v-model="hasSelectedRow" width="500px">
       <BListGroup>
         <BListGroupItem v-for="(rowItem, key) in selectedRow" :key="key">
-          <strong>{{ key }}:</strong> {{ rowItem }}
+          <strong>{{ getFieldByKey(key) }}:</strong><br />{{ rowItem }}
         </BListGroupItem>
       </BListGroup>
     </BSidebar>
@@ -73,12 +64,19 @@
          this.formIdentifier = newVal;
          this.getSubmissions();
        },
+	   getFieldByKey(key) {
+		   const field = this.fields.find(field => field.key == key);
+		   return (field) ? field.label : '';
+	   },
        getValue(formfield_submission) {
-         const val = (isObject(formfield_submission.value)) ? formfield_submission.value.name : formfield_submission.selected_option.option.name;
-         return truncate(val);
+		 try {
+	         const val = (isObject(formfield_submission.value)) ? formfield_submission.value.name : formfield_submission.selected_option.option.name;
+	         return truncate(val);
+		 } catch(e) {
+			 return null;
+		 }
        },
        rowSelected(rows, idx) {
-         console.log(this.$refs.selectTable)
          const row = rows[0];
          this.selectedRow = { ...row };
        },
@@ -122,7 +120,10 @@
             this.selectedRow = {};
           }
         }
-      }
+	   },
+	 	fieldKeys() {
+			return this.fields.map(field => field.key);
+		}
      },
      watch: {
        formId(newVal) {
@@ -136,6 +137,11 @@
          }
        },
      },
+	 filters: {
+		fieldName(key) {
+			return this.getFieldByKey(key);
+		}
+	 },
      components: {
        BListGroup,
        BListGroupItem,
