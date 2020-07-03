@@ -67,7 +67,7 @@ function battery_id_selected($cms_connect, $selected){
         else{
             $output .='<option value = "'.$row['id'].'">'.$row['type'].'</option>';
         }
-        
+
     }
     return $output;
 }
@@ -85,7 +85,7 @@ function product_feature_by_id($cms_connect, $productid){
 	$featuresql = "SELECT id, feat_item FROM product_feature WHERE product_id = $productid ORDER BY feature_order";
 	$featurestmt = $cms_connect->query($featuresql);
 	while($frow = $featurestmt->fetch_assoc()){
-		$feature[] = $frow['feat_item'];	
+		$feature[] = $frow['feat_item'];
 	}
 	return $feature;
 }
@@ -96,7 +96,7 @@ function product_included_by_id($cms_connect, $productid){
 	$includedsql = "SELECT id, included_items FROM product_included WHERE product_id = $productid ORDER BY included_order";
 	$includedstmt = $cms_connect->query($includedsql);
 	while($irow = $includedstmt->fetch_assoc()){
-		$included[] = $irow['included_items'];	
+		$included[] = $irow['included_items'];
 	}
 	return $included;
 }
@@ -107,7 +107,7 @@ function product_battery_by_id($cms_connect, $productid){
 	$batterysql = "SELECT id, battery_id FROM product_battery WHERE product_id = $productid";
 	$batterystmt = $cms_connect->query($batterysql);
 	while($brow = $batterystmt->fetch_assoc()){
-		$battery[] = $brow['battery_id'];	
+		$battery[] = $brow['battery_id'];
 	}
 	return $battery;
 }
@@ -119,7 +119,7 @@ function product_related_by_id($cms_connect, $productid){
 	$relatedstmt = $cms_connect->query($relatedsql);
 	while($rrow = $relatedstmt->fetch_assoc()){
 		array_push($related, $rrow['related_product_id']);
-		//$related[] = $rrow['related_product_id'];	
+		//$related[] = $rrow['related_product_id'];
 	}
 	return $related;
 }
@@ -132,17 +132,17 @@ function product_list_by_brand($cms_connect, $brand){
                             WHERE p.manufacture = '.$brand;
 	$output = '';
 	$stmt = $cms_connect->query($sql);
-	foreach ($stmt as $row){ 
+	foreach ($stmt as $row){
 		$src = $row['site'].'/images/'.$row['file_name'];
 		//$output .= '<option value="'.$row['id'].'" data-img_src="'.$src.'">'.$row['sku'].' - '.$row['feature_name'].'</option>';
 		$output .='<option data-content="<img height=\'50\' src=\''.$src.'\'> '.$row['sku'].' - '.$row['feature_name'].'" value = "'.$row['id'].'"></option>';
     }
-	
+
 	return $output;
 }
 
 // treeview with pre-selected data
-function treeview_category_array($cms_connect, $productid){	
+function treeview_category_array($cms_connect, $productid){
 	// get all associated and primary category
 	$associatedArr = array();
 	$prim = 0;
@@ -157,7 +157,7 @@ function treeview_category_array($cms_connect, $productid){
 
 	// get all parent cat id
 	$sql = 'SELECT id, label, parent FROM product_category  WHERE status = 1';
-	
+
 	$parentArray = array();
 	$parentresult = $cms_connect->query($sql);
 	while($parent = $parentresult->fetch_assoc()){
@@ -207,7 +207,7 @@ function all_image_select_option($cms_connect){
     foreach ($result as $row){
     	$url = str_replace(' ', '%20', $row['url']);
 	    //$output .='<option data-content="<img width=\'50\' height=\'50\' src=\''.$url.'\'> '.$row['file_name'].'" value = "'.$row['ID'].'"></option>';
-	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';	    
+	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
     }
 
     return $output;
@@ -261,7 +261,7 @@ function product_spec_select_option($dbconnect, $pid = 0, $indent = ''){
     while($row = $result->fetch_assoc()){
         echo '<option value = "'.$row['id'].'">'.$indent.utf8_encode($row['name']).'</option>';
         product_spec_select_option($dbconnect, $row['id'], $indent.$row['name'].' -> ');
-    }    
+    }
 }
 
 /************* product spec info by product id and spec id ***********/
@@ -345,7 +345,7 @@ function all_manual_select_option($cms_connect){
     $result = $cms_connect->query($sql);
     $output = '';
     foreach ($result as $row){
-	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';	    
+	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
     }
     return $output;
 }
@@ -369,22 +369,22 @@ function all_languages_select_option($cms_connect, $languageid){
     $output = '';
     foreach ($result as $row){
     	if(in_array($row['id'], $langArr)){
-    		$output .='<option value = "'.$row['id'].'" selected>'.$row['description'].'</option>';	    
+    		$output .='<option value = "'.$row['id'].'" selected>'.$row['description'].'</option>';
     	}
     	else{
-    		$output .='<option value = "'.$row['id'].'">'.$row['description'].'</option>';	 
+    		$output .='<option value = "'.$row['id'].'">'.$row['description'].'</option>';
     	}
-	       
+
     }
     return $output;
 }
 
 /************* get languages by manual id ***********/
 function manual_language_info($cms_connect, $productid, $fileid){
-    $sql = "SELECT m.*, 
+    $sql = "SELECT m.*,
     		(SELECT GROUP_CONCAT(ml.description SEPARATOR '/') FROM master_list ml LEFT JOIN manual_language l ON l.language_id = ml.id WHERE l.manual_id = m.id) AS languages,
     		(SELECT GROUP_CONCAT(ml.ID SEPARATOR '/') FROM master_list ml LEFT JOIN manual_language l ON l.language_id = ml.id WHERE l.manual_id = m.id) AS languageIDs
-    		FROM manuals m 
+    		FROM manuals m
     		WHERE product_id = $productid AND file_id = $fileid";
     $result = $cms_connect->query($sql);
     return $result->fetch_assoc();
@@ -401,7 +401,7 @@ function all_spec_sheet_select_option($cms_connect){
     $result = $cms_connect->query($sql);
     $output = '';
     foreach ($result as $row){
-	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';	    
+	    $output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
     }
     return $output;
 }

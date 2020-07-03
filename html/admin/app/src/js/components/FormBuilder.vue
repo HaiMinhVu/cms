@@ -20,7 +20,6 @@
     BTabs
   } from 'bootstrap-vue';
   import httpClient from '../httpClient';
-  import mainConfig from '../../../../config.json';
   import { uniq } from 'lodash';
   import { formatTitle } from '../filters';
   import Submissions from './FormBuilder/Submissions.vue';
@@ -39,7 +38,7 @@
     },
     methods: {
       init() {
-        this.formClient = new httpClient(mainConfig.services.slmk.form_api);
+        this.formClient = new httpClient(CONFIG.services.slmk.form_api);
         this.getForms();
       },
       async getForms() {

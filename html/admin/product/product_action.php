@@ -33,7 +33,7 @@ if($_POST['action'] == 'add_product'){
 		$add_result =  $cms_connect->error;
 	}
 	$stmt->close();
-	
+
 	$output = array();
 	$output['add_result'] = $add_result;
 	$output['new_product_id'] = $new_product_id;
@@ -121,7 +121,7 @@ if($_POST['action'] == 'add_related_product'){
 		$key = array_search($lost, $existingRelatedProductOrderArr);
 		unset($existingRelatedProductOrderArr[$key]);
 	}
-	
+
 	$final_RelatedArr = array_merge($existingRelatedProductOrderArr, $non_existingRelatedProductOrder);
 	foreach ($final_RelatedArr as $id){
 		$sql = "SELECT p.sku, p.id, m.site, fm.file_name, p.feature_name
@@ -155,7 +155,7 @@ if($_POST['action'] == 'update_extra'){
 	$list_orderArr 					= $_POST['list_order'];
 	$product_relatedArr 			= $_POST['product_related'];
 	$related_productArr 			= $_POST['related_products'];
-	
+
 	$user_id = $_SESSION['uid'];
 
 
@@ -277,7 +277,7 @@ if($_POST['action'] == 'update_category'){
 	$associatedCatIDArr = explode(',', $_POST['associatedCatID']);
 	$prim_category = $_POST['prim_cat'];
 	$user_id = $_SESSION['uid'];
-	
+
 	// delete all association
 	$cat_delete_stmt = $cms_connect->prepare("DELETE FROM product_category_association WHERE product_id = ?");
 	$cat_delete_stmt->bind_param("i",  $product_id);
@@ -354,8 +354,8 @@ if($_POST['action'] == 'update_image'){
 	$primary = $_POST['primary_image'];
 	$user_id = $_SESSION['uid'];
 
-	
-	
+
+
 	$update_prim = $cms_connect->prepare("UPDATE product SET main_img_id = ?, uid_modified = ? WHERE id = ?");
 	$update_prim->bind_param("iii",  $primary, $user_id, $product_id);
 	$update_prim->execute();
@@ -391,7 +391,7 @@ if($_POST['action'] == 'product_spec_change'){
 	$selected_specArr = $_POST['specids'];
 	$existingSpecOrderArr = spec_id_by_product_id($cms_connect, $productid);
 	$output = "";
-	
+
 	// add to non order array if new spec selected
 	$non_existingSpecOrder = array();
 	foreach ($selected_specArr as $specId){
@@ -601,7 +601,7 @@ if($_POST['action'] == 'add_associated_manual'){
 
 		$language = $languageID = '';
 
-		$manualInfo = manual_language_info($cms_connect, $productid, $fileID);  
+		$manualInfo = manual_language_info($cms_connect, $productid, $fileID);
 		if(count($manualInfo) != 0){
 			$language = $manualInfo['languages'];
 			$languageID = $manualInfo['languageIDs'];
@@ -660,10 +660,10 @@ if($_POST['action'] == 'update_manual'){
 			$result = 'Failed';
 		}
 		$manualstmt->close();
-	
+
 		$order++;
 	}
-	
+
 	echo $result;
 }
 
@@ -736,36 +736,41 @@ if($_POST['action'] == 'update_specsheet'){
 
 /******** submit product AVAILABILITY form *******/
 if($_POST['action'] == 'update_availability'){
+	// print_r($_POST);
+	// exit();
 	$productid = $_POST['productid'];
 	$status = $_POST['status'] == 'on' ? 1 : 0;
 	$company = $_POST['company'] == 'on' ? 1 : 0;
 	$dealer = $_POST['dealer'] == 'on' ? 1 : 0;
 	$consumer = $_POST['consumer'] == 'on' ? 1 : 0;
 	$vendor = $_POST['vendor'] == 'on' ? 1 : 0;
+	$allow_backorders = $_POST['allow_backorders'] == 'on' ? 1 : 0;
 	$user_id = $_SESSION['uid'];
 
-	$sql = "UPDATE product SET status = ? , company_res = ?, dealer_res = ?, consumer_res = ?, vendor_res = ?, uid_modified = ? WHERE id = ?";
+	$sql = "UPDATE product SET status = ? , company_res = ?, dealer_res = ?, consumer_res = ?, vendor_res = ?, uid_modified = ?, allow_backorders = ? WHERE id = ?";
 	$stmt = $cms_connect->prepare($sql);
-	$stmt->bind_param("iiiiiii", $status, $company, $dealer, $consumer, $vendor, $user_id, $productid);
+	$stmt->bind_param("iiiiiiii", $status, $company, $dealer, $consumer, $vendor, $user_id, $allow_backorders, $productid);
 	if($stmt->execute()){
 
-		$nsid = $_POST['nsid'];
-		$online_price = $_POST['online_price'];
-		$msrp = $_POST['msrp'];
-		$quantity = $_POST['quantity'];
-		$subsql = "UPDATE netsuite_products SET online_price = ?, msrp = ?, total_quantity_on_hand = ? WHERE nsid = ?";
-		$substmt = $cms_connect->prepare($subsql);
-		$substmt->bind_param("ddii", $online_price, $msrp, $quantity, $nsid);
-		if($substmt->execute()){
+		/*
+			Values updated in Netsuite
+		*/
+		// $nsid = $_POST['nsid'];
+		// $online_price = $_POST['online_price'];
+		// $msrp = $_POST['msrp'];
+		// $quantity = $_POST['quantity'];
+		// $subsql = "UPDATE netsuite_products SET online_price = ?, msrp = ?, total_quantity_on_hand = ? WHERE nsid = ?";
+		// $substmt = $cms_connect->prepare($subsql);
+		// $substmt->bind_param("ddii", $online_price, $msrp, $quantity, $nsid);
+		// if($substmt->execute()){
 			$result = "Availability Updated.";
-		}
-		else{
-			$result = "Update NS Product Failed.";
-		}
+		// }
+		// else{
+		// 	$result = "Update NS Product Failed.";
+		// }
 	}
 	else{
 		$result = 'Update Product Failed.';
 	}
 	echo $result;
 }
-?>

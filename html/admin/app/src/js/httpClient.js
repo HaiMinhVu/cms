@@ -1,6 +1,7 @@
 import axios from 'axios';
 axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-const mainConfig = require('../../../config.json');
+
+console.log(CONFIG);
 
 export default class httpClient {
 	constructor(baseURL = null) {
@@ -11,10 +12,10 @@ export default class httpClient {
 				'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 			}
 		};
-		if(mainConfig.services.slmk.api_key) {
-			config.headers['X-Api-Key'] = mainConfig.services.slmk.api_key;
+		if(CONFIG.services.slmk.api_key) {
+			config.headers['X-Api-Key'] = CONFIG.services.slmk.api_key;
 		}
-		config.baseURL = baseURL ? baseURL : mainConfig.services.slmk.api;
+		config.baseURL = baseURL ? baseURL : CONFIG.services.slmk.api;
 		this._client = new axios.create(config);
 	}
 
