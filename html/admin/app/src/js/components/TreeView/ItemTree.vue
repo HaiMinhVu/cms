@@ -12,7 +12,7 @@
         </span>
         <BCollapse v-model="collapsed">
             <ul v-if="item.children && hasChildren">
-                <ItemTree v-for="child in item.children" :item="child"></ItemTree>
+                <ItemTree v-for="child in item.children" :item="child" :key="child.id"></ItemTree>
             </ul>
         </BCollapse>
     </li>

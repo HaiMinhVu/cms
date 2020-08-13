@@ -26,6 +26,10 @@ jQuery(document).ready(function($) {
 		$('.search-trigger').parent('.header-left').removeClass('open');
 	});
 
+	$('#left-panel .dropdown').on('hide.bs.dropdown', function(e) {
+		e.preventDefault();
+  	});
+
 	// $('.user-area> a').on('click', function(event) {
 	// 	event.preventDefault();
 	// 	event.stopPropagation();

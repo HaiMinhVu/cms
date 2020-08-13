@@ -18,7 +18,7 @@ include('subheader.php');
 ?>
 
 <div class="tab-content">
-	<div class="tab-pane active"> 
+	<div class="tab-pane active">
 		<form method="POST" id="product_spec_form" enctype="multipart/form-data">
 			<div class="row form-group">
                 <div class="col-md-2" align="right">Select Spec</div>
@@ -54,9 +54,9 @@ include('subheader.php');
 	    	<button type="submit" class="btn btn-outline-info" title="Save" form="product_spec_form"><i class="fa fa-floppy-o"></i>&nbsp; Save</button>
 	    	<button type="button" class="btn btn-outline-warning" title="Reset" onClick="window.location.reload()"><i class="fa fa-refresh"></i>&nbsp; Reset</button>
 	    </div>
-	</div> 
+	</div>
 </div> <!-- end tab content-->
-                
+
 
 
 <script type="text/javascript">
@@ -74,8 +74,8 @@ $(document).ready(function(){
     $("#specids").selectpicker('val', <?php echo json_encode($specArr);?>);
     load_spec_table($("#specids").val());
     /******************* end of initial load ********************/
-    
-    
+
+
     /********************** on change spec selected ***************************/
     function load_spec_table(specids){
         if(specids.length == 0){
@@ -128,18 +128,18 @@ $(document).ready(function(){
     $(document).on('click', '.removespec', function(){
         var specids = $("#specids").val();
         var specid = $(this).attr("id");
-        for( var i = 0; i < specids.length; i++){ 
+        for( var i = 0; i < specids.length; i++){
             if(specids[i] == specid){
                 specids.splice(i, 1); // to remove associated image
             }
         }
         $("#specids").selectpicker('val', specids);
         load_spec_table(specids);
-        
+
     });
   	/********************** submit SPECS form ***************************/
   	$('#product_spec_form').submit(function(e){
-        event.preventDefault();
+        e.preventDefault();
         var data = new FormData(this);
         data.append("action", "update_spec");
         data.append("productid", "<?php echo $productid?>");
@@ -152,7 +152,7 @@ $(document).ready(function(){
             processData:false,
             success: function(mess){
                 localStorage.setItem("spec_result", mess);
-                window.location.reload(); 
+                window.location.reload();
             }
         });
     });

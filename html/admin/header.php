@@ -141,10 +141,12 @@ if(!isset($_SESSION['user'])){
 		                    <li class="menu-item-has-children dropdown">
 		                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>CMS</a>
 		                        <ul class="sub-menu children dropdown-menu">
+                                    <li><i class="fa fa-cube"></i><a href="<?php echo $root?>/brand">Brand</a></li>
 		                            <li><i class="fa fa-home"></i><a href="<?php echo $root?>/product/product.php">Product</a></li>
 		                            <li><i class="fa fa-share-alt"></i><a href="<?php echo $root?>/element/navigation.php">Site Elements</a></li>
 		                            <li><i class="fa fa-sitemap"></i><a href="<?php echo $root?>/manage/category.php">Manager</a></li>
 		                            <li><i class="fa fa-file-text-o"></i><a href="<?php echo $root?>/form/register.php">Form</a></li>
+                                    <li><i class="fa fa-gavel"></i><a href="<?php echo $root?>/legal/index.php">Legal</a></li>
 		                        </ul>
 		                    </li>
 
