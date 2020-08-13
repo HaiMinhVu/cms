@@ -391,12 +391,9 @@ if($_POST['action'] == 'product_spec_change'){
 	$selected_specArr = $_POST['specids'];
 	// $existingSpecOrderArr = spec_id_by_product_id($cms_connect, $productid);
 	$productSpecs = product_specs_by_product_id($cms_connect, $productid);
-	echo json_encode($existingSpecOrderArr);
-	exit();
+
 	$output = "";
 	foreach($productSpecs as $spec) {
-		// print_r($spec);
-		// exit();
 		$output .= "<tr>";
 	    $output .= "<td>".$specname."</td>";
 	    $output .= "<td><input type='text' name='description[]' value='".$specdescription."' class='form-control'></td>";
@@ -406,46 +403,45 @@ if($_POST['action'] == 'product_spec_change'){
 	    $output .= "</tr>";
 	}
 	echo $output;
-	return;
 
 	// add to non order array if new spec selected
-	$non_existingSpecOrder = array();
-	foreach ($selected_specArr as $specId){
-		if(!in_array($specId, $existingSpecOrderArr)){
-			$non_existingSpecOrder[] = $specId;
-		}
-	}
-
-	// remove spec that exist in the order array
-	$lostSpecIdArr = array_diff($existingSpecOrderArr, $selected_specArr);
-	foreach($lostSpecIdArr as $lost){
-		$key = array_search($lost, $existingSpecOrderArr);
-		unset($existingSpecOrderArr[$key]);
-	}
-
-	$final_specArr = array_merge($existingSpecOrderArr, $non_existingSpecOrder);
-
-	foreach ($final_specArr as $specId){
-		$specInfo = spec_info_by_ids($cms_connect, $specId, $productid);
-		$specname = $specdescription = $specsuffix = '';
-		if(count($specInfo) != 0){
-			$specname = utf8_encode($specInfo['name']);
-			$specdescription = $specInfo['description'];
-			$specsuffix = $specInfo['suffix'];
-		}
-		else{
-			$specname = spec_name_by_ids($cms_connect, $specId);
-		}
-		$output .= "<tr>";
-	    $output .= "<td>".$specname."</td>";
-	    $output .= "<td><input type='text' name='description[]' value='".$specdescription."' class='form-control'></td>";
-	    $output .= "<td><input type='text' name='suffix[]' value='".$specsuffix."' class='form-control'></td>";
-		$output .= "<td><button type='button' name='removespec' id='".$specId."'' class='btn btn-outline-danger btn-sm removespec' title='Remove Spec'><i class='fa fa-minus'></i></button></td>";
-	    $output .= "<input type='hidden' value='".$specId."' name='specid[]'>";
-	    $output .= "</tr>";
-
-	}
-	echo $output;
+	// $non_existingSpecOrder = array();
+	// foreach ($selected_specArr as $specId){
+	// 	if(!in_array($specId, $existingSpecOrderArr)){
+	// 		$non_existingSpecOrder[] = $specId;
+	// 	}
+	// }
+	//
+	// // remove spec that exist in the order array
+	// $lostSpecIdArr = array_diff($existingSpecOrderArr, $selected_specArr);
+	// foreach($lostSpecIdArr as $lost){
+	// 	$key = array_search($lost, $existingSpecOrderArr);
+	// 	unset($existingSpecOrderArr[$key]);
+	// }
+	//
+	// $final_specArr = array_merge($existingSpecOrderArr, $non_existingSpecOrder);
+	//
+	// foreach ($final_specArr as $specId){
+	// 	$specInfo = spec_info_by_ids($cms_connect, $specId, $productid);
+	// 	$specname = $specdescription = $specsuffix = '';
+	// 	if(count($specInfo) != 0){
+	// 		$specname = utf8_encode($specInfo['name']);
+	// 		$specdescription = $specInfo['description'];
+	// 		$specsuffix = $specInfo['suffix'];
+	// 	}
+	// 	else{
+	// 		$specname = spec_name_by_ids($cms_connect, $specId);
+	// 	}
+	// 	$output .= "<tr>";
+	//     $output .= "<td>".$specname."</td>";
+	//     $output .= "<td><input type='text' name='description[]' value='".$specdescription."' class='form-control'></td>";
+	//     $output .= "<td><input type='text' name='suffix[]' value='".$specsuffix."' class='form-control'></td>";
+	// 	$output .= "<td><button type='button' name='removespec' id='".$specId."'' class='btn btn-outline-danger btn-sm removespec' title='Remove Spec'><i class='fa fa-minus'></i></button></td>";
+	//     $output .= "<input type='hidden' value='".$specId."' name='specid[]'>";
+	//     $output .= "</tr>";
+	//
+	// }
+	// echo $output;
 }
 
 /******** product specs like other products *******/

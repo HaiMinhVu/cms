@@ -19,6 +19,10 @@
 				</div>
 			</div>
 			<div class="mx-1">
+				<label for="to-date">Brand:</label>
+				<BFormSelect :options="brands" v-model="selectedBrand"></BFormSelect>
+			</div>
+			<div class="mx-1">
 				<BPagination v-model="page" :per-page="perPage" class="mb-0" :total-rows="total" v-if="hasSubmissions"></BPagination>
 			</div>
 		</div>
@@ -61,6 +65,7 @@ import {
 	BFormInput,
 	BFormDatepicker,
 	BFormText,
+	BFormSelect,
 	BIconBoxArrowRight,
 	BListGroup,
 	BListGroupItem,
@@ -70,7 +75,7 @@ import {
 	BTable
 } from 'bootstrap-vue';
 import { formatTitle } from '../../filters';
-import { isEmpty, isObject, last, truncate } from 'lodash';
+import { isEmpty, isObject, last, truncate, uniq } from 'lodash';
 import { ExportToCsv } from 'export-to-csv';
 
 export default {
@@ -91,6 +96,7 @@ export default {
 			showModal: false,
 			submissions: [],
 			selectedRow: {},
+			selectedBrand: 'All',
 			total: 0
 		}
 	},
@@ -186,6 +192,7 @@ export default {
 			return submissions.map(s => {
 				const fsData = {};
 				fsData['created_at'] = s.created_at;
+				fsData['brand'] = s.brand.name;
 				for(let fs of s.field_submissions) {
 					fsData[fs.form_field.name] = this.getValue(fs);
 				}
@@ -215,16 +222,35 @@ export default {
 						label: fs.form_field.description
 					};
 				});
-				return [{ key: "created_at", label: "Submitted At" }, ...fields];
+				return [
+					{ key: "created_at", label: "Submitted At" },
+					{ key: "brand", label: "Brand" },
+					...fields
+				];
 			}
 			return [];
 		},
 		hasSubmissions() {
 			return this.submissions.length > 0;
 		},
+		brands() {
+			if(this.hasSubmissions) {
+				const brands = this.submissions.map(s => s.brand.name);
+				return uniq(['All', ...brands]);
+			}
+			return ['All'];
+		},
+		filteredSubmissions() {
+			if(this.selectedBrand != 'All') {
+				return this.submissions.filter(submission => {
+					return submission.brand.name == this.selectedBrand;
+				});
+			}
+			return this.submissions;
+		},
 		items() {
 			if(this.hasSubmissions) {
-				return this.mapSubmissions(this.submissions);
+				return this.mapSubmissions(this.filteredSubmissions);
 			}
 			return [];
 		},
@@ -284,6 +310,7 @@ export default {
 		BFormDatepicker,
 		BFormGroup,
 		BFormInput,
+		BFormSelect,
 		BFormText,
 		BIconBoxArrowRight,
 		BListGroup,

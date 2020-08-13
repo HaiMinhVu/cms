@@ -152,7 +152,7 @@ $(document).ready(function(){
             processData:false,
             success: function(mess){
                 localStorage.setItem("spec_result", mess);
-                // window.location.reload();
+                window.location.reload();
             }
         });
     });

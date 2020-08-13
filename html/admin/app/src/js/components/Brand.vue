@@ -73,7 +73,6 @@
                 this.getData();
             },
             async toggleDelete(prefix = null) {
-                console.log(prefix)
                 if(prefix) {
                     const { data } = await this.httpClient.post(`brand/toggle/${prefix}`);
                     this.getData();
