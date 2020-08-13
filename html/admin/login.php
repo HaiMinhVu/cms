@@ -16,8 +16,8 @@ else{
 		$password = $_POST['password']; //Storing password in $password variable.
 		$username = mysqli_real_escape_string($cms_connect, $username);
 		$password = mysqli_real_escape_string($cms_connect, $password);
-		// $sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and password = aes_encrypt('$password','$key') and status='1'";
-		$sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and status='1'";
+		$sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and password = aes_encrypt('$password','$key') and status='1'";
+		// $sql = "SELECT id, username, role_id FROM users WHERE username='".$username."' and status='1'";
 		$result = $cms_connect->query($sql);
 		$row = $result->fetch_assoc();
 		$timestamp = date('Y-m-d G:i:s');
