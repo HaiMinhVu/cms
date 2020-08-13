@@ -5,7 +5,7 @@
 		</BFormGroup>
 		<BTabs>
 			<BTab title="Submissions">
-				<Submissions :form-client="formClient" :form-slug="selectedForm" v-if="hasSelectedForm" />
+				<Submissions :v2-client="v2Client" :brands="brands" :form-slug="selectedForm" v-if="hasSelectedForm" />
 			</BTab>
 			<BTab title="Editor (Coming Soon)" disabled></BTab>
 		</BTabs>
@@ -29,7 +29,8 @@ import Submissions from './FormBuilder/Submissions.vue';
 export default {
 	data() {
 		return {
-			formClient: null,
+			brands: [],
+			v2Client: null,
 			rawData: [],
 			selectedForm: null,
 			selectedFormData: null
@@ -39,16 +40,21 @@ export default {
 		this.init();
 	},
 	methods: {
+		async getBrandData() {
+			const { data } = await this.v2Client.get('brand');
+			this.brands = data;
+		},
 		init() {
-			this.formClient = new httpClient(CONFIG.services.slmk.form_api);
+			this.v2Client = new httpClient(CONFIG.services.slmk.v2_api);
 			this.getForms();
+			this.getBrandData();
 		},
 		async getForms() {
-			const { data } = await this.formClient.get();
+			const { data } = await this.v2Client.get('form');
 			this.rawData = data;
 		},
 		async getSelectedForm() {
-			const { data } = await this.formClient.get(this.selectedForm);
+			const { data } = await this.v2Client.get(`form/${this.selectedForm}`);
 			this.selectedFormData  = data.data;
 		}
 	},

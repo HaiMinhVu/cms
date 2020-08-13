@@ -20,7 +20,10 @@
 			</div>
 			<div class="mx-1">
 				<label for="to-date">Brand:</label>
-				<BFormSelect :options="brands" v-model="selectedBrand"></BFormSelect>
+				<BFormSelect v-model="selectedBrand">
+					<BFormSelectOption value="all">All</BFormSelectOption>
+					<BFormSelectOption v-for="brand in brands" :value="brand.id" :key="brand.id">{{ brand.name }}</BFormSelectOption>
+				</BFormSelect>
 			</div>
 			<div class="mx-1">
 				<BPagination v-model="page" :per-page="perPage" class="mb-0" :total-rows="total" v-if="hasSubmissions"></BPagination>
@@ -66,6 +69,7 @@ import {
 	BFormDatepicker,
 	BFormText,
 	BFormSelect,
+	BFormSelectOption,
 	BIconBoxArrowRight,
 	BListGroup,
 	BListGroupItem,
@@ -80,12 +84,14 @@ import { ExportToCsv } from 'export-to-csv';
 
 export default {
 	props: {
-		formClient: Object,
+		brands: Array,
+		v2Client: Object,
 		formId: Number,
 		formSlug: String
 	},
 	data() {
 		return {
+			httpClient: null,
 			fileName: null,
 			formIdentifier: null,
 			fromDate: null,
@@ -96,8 +102,9 @@ export default {
 			showModal: false,
 			submissions: [],
 			selectedRow: {},
-			selectedBrand: 'All',
-			total: 0
+			selectedBrand: 'all',
+			total: 0,
+			brandOptions: []
 		}
 	},
 	created() {
@@ -117,10 +124,13 @@ export default {
 					'to-date': this.toDate
 				}
 			};
+			if(this.selectedBrand != 'all') {
+				params.params.brand = this.selectedBrand;
+			}
 			if(all) {
 				params.params.all = true;
 			}
-			const { data } = await this.formClient.get('submission', params);
+			const { data } = await this.v2Client.get('form/submission', params);
 			return data;
 		},
 		async getSubmissions() {
@@ -204,16 +214,6 @@ export default {
 		defaultFileName() {
 			return `${this.formSlug}`;
 		},
-		// fileName: {
-		// 	get() {
-		// 		return this.fileNameValue;
-		// 	},
-		// 	set(newVal) {
-		// 		const baseFileName = this.baseFileName(newVal);
-		// 		console.log(baseFileName)
-		// 		this.fileNameValue = `${baseFileName}.csv`;
-		// 	}
-		// },
 		fields() {
 			if(this.hasSubmissions) {
 				let fields = last(this.submissions).field_submissions.map(fs => {
@@ -233,24 +233,9 @@ export default {
 		hasSubmissions() {
 			return this.submissions.length > 0;
 		},
-		brands() {
-			if(this.hasSubmissions) {
-				const brands = this.submissions.map(s => s.brand.name);
-				return uniq(['All', ...brands]);
-			}
-			return ['All'];
-		},
-		filteredSubmissions() {
-			if(this.selectedBrand != 'All') {
-				return this.submissions.filter(submission => {
-					return submission.brand.name == this.selectedBrand;
-				});
-			}
-			return this.submissions;
-		},
 		items() {
 			if(this.hasSubmissions) {
-				return this.mapSubmissions(this.filteredSubmissions);
+				return this.mapSubmissions(this.submissions);
 			}
 			return [];
 		},
@@ -286,12 +271,18 @@ export default {
 			}
 		},
 		fromDate() {
+			this.page = 1;
 			this.dateChanged();
 		},
 		toDate() {
+			this.page = 1;
 			this.dateChanged();
 		},
 		page() {
+			this.getSubmissions();
+		},
+		selectedBrand() {
+			this.page = 1;
 			this.getSubmissions();
 		},
 		showModal(newVal) {
@@ -311,6 +302,7 @@ export default {
 		BFormGroup,
 		BFormInput,
 		BFormSelect,
+		BFormSelectOption,
 		BFormText,
 		BIconBoxArrowRight,
 		BListGroup,
