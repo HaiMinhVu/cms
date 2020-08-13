@@ -1,176 +1,321 @@
 <template>
-	<section class="submission-container">
-    <BTable
-      responsive
-      sticky-header
-      ref="selectTable"
-      selectable
-      selectMode="single"
-      :fields="fields"
-      :items="items"
-      @row-selected="rowSelected"
-      v-if="hasSubmissions"
-    />
-    <BSidebar v-model="hasSelectedRow" width="500px">
-      <BListGroup>
-        <BListGroupItem v-for="(rowItem, key) in selectedRow" :key="key">
-          <strong>{{ getFieldByKey(key) }}:</strong><br />{{ rowItem }}
-        </BListGroupItem>
-      </BListGroup>
-    </BSidebar>
+	<section class="submission-container" v-if="loaded">
+		<div class="d-flex justify-content-between p-4">
+			<h3>{{ title }}</h3>
+			<BButton variant="primary" @click="showExportModal">
+				<BIconBoxArrowRight /> Export Data
+			</BButton>
+		</div>
+		<hr class="mt-0" />
+		<div class="d-flex justify-content-between align-items-center mt-0 mb-3">
+			<div class="d-flex justify-content-between">
+				<div class="mx-1">
+					<label for="from-date">From Date:</label>
+    				<BFormDatepicker id="from-date" v-model="fromDate"></BFormDatepicker>
+				</div>
+				<div class="mx-1">
+					<label for="to-date">To Date:</label>
+    				<BFormDatepicker id="to-date" v-model="toDate"></BFormDatepicker>
+				</div>
+			</div>
+			<div class="mx-1">
+				<BPagination v-model="page" :per-page="perPage" class="mb-0" :total-rows="total" v-if="hasSubmissions"></BPagination>
+			</div>
+		</div>
+		<BTable
+			responsive
+			class="m"
+			ref="selectTable"
+			selectable
+			selectMode="single"
+			:fields="fields"
+			:items="items"
+			@row-selected="rowSelected"
+		/>
+		<div class="d-flex justify-content-between align-items-center mt-0 mb-3">
+			<div></div>
+			<div class="mx-1">
+				<BPagination v-model="page" :per-page="perPage" class="mb-0" :total-rows="total" v-if="hasSubmissions"></BPagination>
+			</div>
+		</div>
+		<BSidebar v-model="hasSelectedRow" width="500px">
+			<BListGroup>
+				<BListGroupItem v-for="(rowItem, key) in selectedRow" :key="key">
+					<strong>{{ getFieldByKey(key) }}:</strong><br />{{ rowItem }}
+				</BListGroupItem>
+			</BListGroup>
+		</BSidebar>
+		<BModal v-model="showModal" @ok="exportData">
+			<BFormGroup label="Filename">
+				<BFormInput v-model="fileName" />
+				<BFormText>File will be saved as .csv</BFormText>
+			</BFormGroup>
+		</BModal>
 	</section>
 </template>
 
 <script>
-	import {
-    BListGroup,
-    BListGroupItem,
-    BSidebar,
-    BTable
-  } from 'bootstrap-vue';
-  import { isEmpty, isObject, truncate } from 'lodash';
+import {
+	BButton,
+	BFormGroup,
+	BFormInput,
+	BFormDatepicker,
+	BFormText,
+	BIconBoxArrowRight,
+	BListGroup,
+	BListGroupItem,
+	BModal,
+	BPagination,
+	BSidebar,
+	BTable
+} from 'bootstrap-vue';
+import { formatTitle } from '../../filters';
+import { isEmpty, isObject, last, truncate } from 'lodash';
+import { ExportToCsv } from 'export-to-csv';
 
-	export default {
-	   props: {
-       formClient: Object,
-       formId: Number,
-       formSlug: String
-     },
-     data() {
-       return {
-         formIdentifier: null,
-         loaded: false,
-         submissions: [],
-         selectedRow: {}
-       }
-     },
-     created() {
-       const formIdentifier = (!!this.formId) ? this.formId : this.formSlug;
-       this.setFormIdentifier(formIdentifier);
-     },
-     mounted() {
-        this.loaded = true;
-     },
-     methods: {
-       async getSubmissions() {
-         const { data } = await this.formClient.get('submission', {
-           params: {
-             'form-slug': this.formIdentifier
-           }
-         });
-         this.submissions = data;
-       },
-       setFormIdentifier(newVal) {
-         this.formIdentifier = newVal;
-         this.getSubmissions();
-       },
-	   getFieldByKey(key) {
-		   const field = this.fields.find(field => field.key == key);
-		   return (field) ? field.label : '';
-	   },
-       getValue(formfield_submission) {
-		 try {
-	         const val = (isObject(formfield_submission.value)) ? formfield_submission.value.name : formfield_submission.selected_option.option.name;
-	         return truncate(val);
-		 } catch(e) {
-			 return null;
-		 }
-       },
-       rowSelected(rows, idx) {
-         const row = rows[0];
-         this.selectedRow = { ...row };
-       },
-       sidebarHidden() {
-         this.selectedRow = {};
-       }
-     },
-     computed: {
-      fields() {
-        if(this.hasSubmissions) {
-          return this.submissions[0].field_submissions.map(fs => {
-            return {
-              key: fs.form_field.name,
-              label: fs.form_field.description
-            };
-          });
-        }
-        return [];
-      },
-      hasSubmissions() {
-        return this.submissions.length > 0;
-      },
-      items() {
-        if(this.hasSubmissions) {
-          return this.submissions.map(s => {
-            const fsData = {};
-            for(let fs of s.field_submissions) {
-              fsData[fs.form_field.name] = this.getValue(fs);
-            }
-            return fsData;
-          });
-        }
-        return [];
-      },
-      hasSelectedRow: {
-        get() {
-            return !isEmpty(this.selectedRow);
-        },
-        set(newVal) {
-          if(!newVal) {
-            this.selectedRow = {};
-          }
-        }
-	   },
-	 	fieldKeys() {
-			return this.fields.map(field => field.key);
+export default {
+	props: {
+		formClient: Object,
+		formId: Number,
+		formSlug: String
+	},
+	data() {
+		return {
+			fileName: null,
+			formIdentifier: null,
+			fromDate: null,
+			toDate: null,
+			loaded: false,
+			page: 1,
+			perPage: 0,
+			showModal: false,
+			submissions: [],
+			selectedRow: {},
+			total: 0
 		}
-     },
-     watch: {
-       formId(newVal) {
-         if(this.loaded) {
-           this.setFormIdentifier(newVal);
-         }
-       },
-       formSlug(newVal) {
-         if(this.loaded) {
-           this.setFormIdentifier(newVal);
-         }
-       },
-     },
-	 filters: {
+	},
+	created() {
+		const formIdentifier = (!!this.formId) ? this.formId : this.formSlug;
+		this.setFormIdentifier(formIdentifier);
+	},
+	mounted() {
+		this.loaded = true;
+	},
+	methods: {
+		async getSubmissionData(all = false) {
+			const params = {
+				params: {
+					'form-slug': this.formIdentifier,
+					page: this.page,
+					'from-date': this.fromDate,
+					'to-date': this.toDate
+				}
+			};
+			if(all) {
+				params.params.all = true;
+			}
+			const { data } = await this.formClient.get('submission', params);
+			return data;
+		},
+		async getSubmissions() {
+			const data = await this.getSubmissionData();
+			this.submissions = data.data;
+			this.perPage = data.per_page;
+			this.total = data.total;
+		},
+		dateChanged() {
+			if(this.page == 1) {
+				this.getSubmissions();
+			} else {
+				this.page = 1;
+			}
+		},
+		csvHeaders(data) {
+			const dataKeys = Object.keys(data[0]);
+			return dataKeys.map(k => formatTitle(k));
+		},
+		exportCSV(data) {
+			const csvExporter = new ExportToCsv({
+				filename: this.fileName,
+				showLabels: true,
+				headers: this.csvHeaders(data)
+			});
+			csvExporter.generateCsv(data);
+		},
+		async exportData() {
+			const submissions = await this.getSubmissionData(true);
+			const mapped = this.mapSubmissions(submissions);
+			const data = JSON.parse(JSON.stringify(mapped));
+			this.exportCSV(data);
+		},
+		setFormIdentifier(newVal) {
+			this.formIdentifier = newVal;
+			this.getSubmissions();
+		},
+		getFieldByKey(key) {
+			const field = this.fields.find(field => field.key == key);
+			return (field) ? field.label : '';
+		},
+		getValue(formfield_submission) {
+			try {
+				const val = (isObject(formfield_submission.value)) ? formfield_submission.value.name : formfield_submission.selected_option.option.name;
+				return truncate(val);
+			} catch(e) {
+				return null;
+			}
+		},
+		rowSelected(rows, idx) {
+			const row = rows[0];
+			this.selectedRow = { ...row };
+		},
+		showExportModal() {
+			this.showModal = true;
+		},
+		sidebarHidden() {
+			this.selectedRow = {};
+		},
+		baseFileName(str) {
+			if(str) {
+				const fileNameArr = str.split('.');
+				if(fileNameArr.length > 1) fileNameArr.pop();
+				return fileNameArr.join();
+			}
+			return null;
+		},
+		mapSubmissions(submissions) {
+			return submissions.map(s => {
+				const fsData = {};
+				fsData['created_at'] = s.created_at;
+				for(let fs of s.field_submissions) {
+					fsData[fs.form_field.name] = this.getValue(fs);
+				}
+				return fsData;
+			});
+		}
+	},
+	computed: {
+		defaultFileName() {
+			return `${this.formSlug}`;
+		},
+		// fileName: {
+		// 	get() {
+		// 		return this.fileNameValue;
+		// 	},
+		// 	set(newVal) {
+		// 		const baseFileName = this.baseFileName(newVal);
+		// 		console.log(baseFileName)
+		// 		this.fileNameValue = `${baseFileName}.csv`;
+		// 	}
+		// },
+		fields() {
+			if(this.hasSubmissions) {
+				let fields = last(this.submissions).field_submissions.map(fs => {
+					return {
+						key: fs.form_field.name,
+						label: fs.form_field.description
+					};
+				});
+				return [{ key: "created_at", label: "Submitted At" }, ...fields];
+			}
+			return [];
+		},
+		hasSubmissions() {
+			return this.submissions.length > 0;
+		},
+		items() {
+			if(this.hasSubmissions) {
+				return this.mapSubmissions(this.submissions);
+			}
+			return [];
+		},
+		hasSelectedRow: {
+			get() {
+				return !isEmpty(this.selectedRow);
+			},
+			set(newVal) {
+				if(!newVal) {
+					this.selectedRow = {};
+				}
+			}
+		},
+		fieldKeys() {
+			return this.fields.map(field => field.key);
+		},
+		title() {
+			if(this.formSlug) {
+				return formatTitle(this.formSlug, '-');
+			}
+			return null;
+		}
+	},
+	watch: {
+		formId(newVal) {
+			if(this.loaded) {
+				this.setFormIdentifier(newVal);
+			}
+		},
+		formSlug(newVal) {
+			if(this.loaded) {
+				this.setFormIdentifier(newVal);
+			}
+		},
+		fromDate() {
+			this.dateChanged();
+		},
+		toDate() {
+			this.dateChanged();
+		},
+		page() {
+			this.getSubmissions();
+		},
+		showModal(newVal) {
+			if(newVal) {
+				this.fileName = this.defaultFileName;
+			}
+		}
+	},
+	filters: {
 		fieldName(key) {
 			return this.getFieldByKey(key);
 		}
-	 },
-     components: {
-       BListGroup,
-       BListGroupItem,
-       BSidebar,
-       BTable
-     }
+	},
+	components: {
+		BButton,
+		BFormDatepicker,
+		BFormGroup,
+		BFormInput,
+		BFormText,
+		BIconBoxArrowRight,
+		BListGroup,
+		BListGroupItem,
+		BModal,
+		BPagination,
+		BSidebar,
+		BTable
 	}
+}
 </script>
 
 <style scoped lang="scss">
-  .b-table-sticky-header {
-    max-height: calc(100vh - 270px);
-    @media screen and (min-width: 580px) {
-      max-height: calc(100vh - 221px);
-    }
-    @media screen and (min-width: 1025px) {
-      max-width: calc(100vw - 292px);
-    }
-  }
-  .submission-container {
-    max-width: calc(100vw - 10px);
-    @media screen and (min-width: 580px) {
-      max-width: calc(100vw - 262px);
-    }
-    @media screen and (min-width: 1025px) {
-      max-width: calc(100vw - 292px);
-    }
-  }
-  .b-table-sticky-header > .table.b-table > thead > tr > th {
-    top: -1px;
-  }
+.b-table-sticky-header {
+	max-height: calc(100vh - 270px);
+	@media screen and (min-width: 580px) {
+		max-height: calc(100vh - 221px);
+	}
+	@media screen and (min-width: 1025px) {
+		max-width: calc(100vw - 292px);
+	}
+}
+.submission-container {
+	max-width: calc(100vw - 10px);
+	@media screen and (min-width: 580px) {
+		max-width: calc(100vw - 262px);
+	}
+	@media screen and (min-width: 1025px) {
+		max-width: calc(100vw - 292px);
+	}
+}
+.b-table-sticky-header > .table.b-table > thead > tr > th {
+	top: -1px;
+}
 </style>

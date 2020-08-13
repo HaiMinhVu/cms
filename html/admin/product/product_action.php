@@ -389,8 +389,24 @@ if($_POST['action'] == 'update_image'){
 if($_POST['action'] == 'product_spec_change'){
 	$productid = $_POST['productid'];
 	$selected_specArr = $_POST['specids'];
-	$existingSpecOrderArr = spec_id_by_product_id($cms_connect, $productid);
+	// $existingSpecOrderArr = spec_id_by_product_id($cms_connect, $productid);
+	$productSpecs = product_specs_by_product_id($cms_connect, $productid);
+	echo json_encode($existingSpecOrderArr);
+	exit();
 	$output = "";
+	foreach($productSpecs as $spec) {
+		// print_r($spec);
+		// exit();
+		$output .= "<tr>";
+	    $output .= "<td>".$specname."</td>";
+	    $output .= "<td><input type='text' name='description[]' value='".$specdescription."' class='form-control'></td>";
+	    $output .= "<td><input type='text' name='suffix[]' value='".$specsuffix."' class='form-control'></td>";
+		$output .= "<td><button type='button' name='removespec' id='".$specId."'' class='btn btn-outline-danger btn-sm removespec' title='Remove Spec'><i class='fa fa-minus'></i></button></td>";
+	    $output .= "<input type='hidden' value='".$specId."' name='specid[]'>";
+	    $output .= "</tr>";
+	}
+	echo $output;
+	return;
 
 	// add to non order array if new spec selected
 	$non_existingSpecOrder = array();

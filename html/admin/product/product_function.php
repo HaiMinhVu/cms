@@ -134,8 +134,8 @@ function product_list_by_brand($cms_connect, $brand){
 	$stmt = $cms_connect->query($sql);
 	foreach ($stmt as $row){
 		$src = $row['site'].'/images/'.$row['file_name'];
-		//$output .= '<option value="'.$row['id'].'" data-img_src="'.$src.'">'.$row['sku'].' - '.$row['feature_name'].'</option>';
-		$output .='<option data-content="<img height=\'50\' src=\''.$src.'\'> '.$row['sku'].' - '.$row['feature_name'].'" value = "'.$row['id'].'"></option>';
+		$output .= '<option value="'.$row['id'].'">'.$row['sku'].' - '.$row['feature_name'].'</option>';
+		// $output .='<option data-content="<img height=\'50\' src=\''.$src.'\'> '.$row['sku'].' - '.$row['feature_name'].'" value = "'.$row['id'].'"></option>';
     }
 
 	return $output;
@@ -281,7 +281,7 @@ function spec_name_by_ids($cms_connect, $specid){
 
 /************* get all existing SPEC with product id ***********/
 function spec_id_by_product_id($cms_connect, $productid){
-	$sql = "SELECT spec_id, prod_order FROM product_spec WHERE product_id = $productid ORDER BY prod_order";
+	$sql = "SELECT id, spec_id, prod_order FROM product_spec WHERE product_id = $productid ORDER BY prod_order";
     $result = $cms_connect->query($sql);
 	$output = array();
 	foreach ($result as $row) {
@@ -290,6 +290,22 @@ function spec_id_by_product_id($cms_connect, $productid){
     return $output;
 }
 
+/************* get all existing Product Specs by product id ***********/
+function product_specs_by_product_id($cms_connect, $productid){
+	$sql = "SELECT ps.id, ps.spec_id, ps.description, ps.suffix, ps.prod_order, lps.name
+			FROM product_spec ps
+			LEFT JOIN list_product_spec lps ON lps.id = ps.spec_id
+			WHERE ps.product_id = $productid
+			ORDER BY ps.prod_order";
+    $result = $cms_connect->query($sql);
+	$specs = [];
+	while($row = $result->fetch_assoc()) {
+	   $specs[] = $row;
+	}
+	echo json_encode($specs, true);
+	exit();
+	return $specs;
+}
 
 
 /*********************************************************************************/
