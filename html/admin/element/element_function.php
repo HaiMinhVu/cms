@@ -115,9 +115,9 @@ function nav_select_option_recursive($cms_connect, $pid = 0, $indent = ''){
 
 /****************** functions for TRADE SHOWs page ************************/
 function all_image_select_option($cms_connect){
-    $sql = "SELECT DISTINCT fm.ID, concat(sl.url, ml.description, fm.file_name) as url, fm.file_name
+    $sql = "SELECT DISTINCT fm.ID, concat(sl.url, '/', ml.description, fm.file_name) as url, fm.file_name
 			FROM file_manager fm LEFT JOIN site_list sl ON sl.id = fm.site_id
-			                	LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
+			                	 LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
 			WHERE fm.file_type_id = 10 ";
     $result = $cms_connect->query($sql);
     $output = '';
@@ -130,17 +130,20 @@ function all_image_select_option($cms_connect){
 }
 
 function all_image_select_option_imgview($cms_connect){
-    $sql = "SELECT DISTINCT fm.ID, concat(sl.url, ml.description, fm.file_name) as url, fm.file_name
-			FROM file_manager fm LEFT JOIN site_list sl ON sl.id = fm.site_id
-			                	LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
-			WHERE fm.file_type_id = 10 ";
+    $sql = "SELECT DISTINCT fm.ID, concat(lm.slug, '/', ml.description, fm.file_name) as url, fm.file_name
+			FROM file_manager fm
+                LEFT JOIN site_list sl ON sl.id = fm.site_id
+			    LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
+                LEFT JOIN list_manufacture lm ON sl.prefix = lm.prefix
+            WHERE fm.site_folder_id = 14 OR fm.site_folder_id = 10";
     $result = $cms_connect->query($sql);
     $output = '';
 
     foreach ($result as $row){
     	$url = str_replace(' ', '%20', $row['url']);
-	    $output .='<option data-content="<img height=\'50\' src=\''.$url.'\'> '.$row['file_name'].'" value = "'.$row['ID'].'"></option>';
-	    //$output .='<option value = "'.$row['ID'].'">'.$row['file_name'].'</option>';
+        $imageUrl = AWS::imageLink($url, 100);
+	    // $output .='<option data-content="<img height=\'50\' src=\''.$imageUrl.'\'> '.$row['file_name'].'" value = "'.$row['ID'].'"></option>';
+	    $output .='<option value = "'.$row['ID'].'">'.$url.'</option>';
     }
 
     return $output;

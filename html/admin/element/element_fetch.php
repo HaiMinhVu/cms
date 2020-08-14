@@ -1,5 +1,6 @@
 <?php
 include('../../../newconnect.php');
+use App\Services\AWS;
 
 /*************************** fetch data for TRADE SHOW ****************************/
 if(isset($_POST) && $_POST['tradeshow_action'] == 'fetch_show'){
@@ -47,7 +48,7 @@ if(isset($_POST) && $_POST['tradeshow_action'] == 'fetch_show'){
     $filtered_rows = mysqli_num_rows($statement);
     while($row = $statement->fetch_assoc()){
         $sub_array = array();
-        $sub_array['img'] = '<a href="'.$row['url'].'" data-toggle="lightbox" data-max-height="600"><img src="'.$row['url'].'" height="50" ></a>';
+        // $sub_array['img'] = '<a href="'.$row['url'].'" data-toggle="lightbox" data-max-height="600"><img src="'.$row['url'].'" height="50" ></a>';
         $sub_array['show'] = $row['ts_show'];
         $sub_array['from'] = $row['ts_date_from'];
         $sub_array['to'] = $row['ts_date_to'];
@@ -78,10 +79,11 @@ if(isset($_POST) && $_POST['tradeshow_action'] == 'fetch_show'){
 if(isset($_POST) && $_POST['slider_action'] == 'fetch_slider'){
     $query = '';
     $output = array();
-    $query .= " SELECT si.*, concat(sl.url, ml.description, fm.file_name) as url
+    $query .= " SELECT si.*, concat(lm.slug, '/', ml.description, fm.file_name) as url
                 FROM slider_image si LEFT JOIN file_manager fm ON fm.ID = si.file_id
-                                    LEFT JOIN site_list sl ON sl.id = fm.site_id
-                                    LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
+                                     LEFT JOIN site_list sl ON sl.id = fm.site_id
+                                     LEFT JOIN master_list ml ON ml.id = fm.site_folder_id
+                                     LEFT JOIN list_manufacture lm ON sl.prefix = lm.prefix
                 WHERE active = 1 AND si.pid = ".$_POST['pageID'];
 
     $query .= " ORDER BY si.slider_order ";
@@ -97,7 +99,9 @@ if(isset($_POST) && $_POST['slider_action'] == 'fetch_slider'){
     $filtered_rows = mysqli_num_rows($statement);
     while($row = $statement->fetch_assoc()){
         $sub_array = array();
-        $sub_array['img'] = '<a href="'.$row['url'].'" data-toggle="lightbox" data-max-height="600"><img src="'.$row['url'].'" height=100 /></a>';
+        $imgUrl = AWS::imageLink($row['url']);
+        $imgUrlThumb = AWS::imageLink($row['url'], 250);
+        $sub_array['img'] = '<a href="'.$imgUrl.'" data-toggle="lightbox" data-max-height="600"><img src="'.$imgUrlThumb.'" height=100 /></a>';
         $sub_array['link'] = $row['link_value'];
         $sub_array['text'] = $row['text'];
         $sub_array['order'] = $row['slider_order'];
