@@ -302,8 +302,8 @@ function product_specs_by_product_id($cms_connect, $productid){
 	while($row = $result->fetch_assoc()) {
 	   $specs[] = $row;
 	}
-	echo json_encode($specs, true);
-	exit();
+	// echo json_encode($specs, true);
+	// exit();
 	return $specs;
 }
 

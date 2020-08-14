@@ -91,7 +91,7 @@ $(document).ready(function(){
                     specids:specids,action:action, productid:productid
                 },
                 success: function(mess){
-                    //console.log(mess)
+                    console.log(mess)
                     $('#spec_table_body').html('');
                     $('#spec_table_body').append(mess);
                     $('#spec_table_body').sortable();
@@ -115,7 +115,7 @@ $(document).ready(function(){
                 action:action,productID:productID
             },
             success: function(mess){
-                //console.log(mess)
+                console.log(mess)
                 $('#spec_table_body').html('');
                 $('#spec_table_body').append(mess);
                 $('#spec_table_body').sortable();

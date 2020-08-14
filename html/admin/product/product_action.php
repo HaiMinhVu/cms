@@ -403,6 +403,7 @@ if($_POST['action'] == 'product_spec_change'){
 	//     $output .= "</tr>";
 	// }
 	// echo $output;
+	// exit;
 
 	// add to non order array if new spec selected
 	$non_existingSpecOrder = array();
